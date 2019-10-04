@@ -56,7 +56,7 @@ func (server *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := post.FindAllPosts(server.DB)
 	if err != nil {
-		responses.ERROR(w, http.StatusInternalServerError, err);
+		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 	responses.JSON(w, http.StatusOK, posts)

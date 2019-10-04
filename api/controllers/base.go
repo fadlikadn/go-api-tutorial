@@ -5,14 +5,14 @@ import (
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
 	"log"
 	"net/http"
-	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
 )
 
 type Server struct {
-	DB		*gorm.DB
-	Router	*mux.Router
+	DB     *gorm.DB
+	Router *mux.Router
 }
 
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {

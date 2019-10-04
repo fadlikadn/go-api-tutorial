@@ -9,13 +9,13 @@ import (
 )
 
 type Post struct {
-	ID			uint64		`gorm:"primary_key;auto_increment" json:"id"`
-	Title		string		`gorm:"size:255;not_null;unique" json:"title"`
-	Content		string		`gorm:"sie:255;not_null;" json:"content"`
-	Author		User		`json:"author"`
-	AuthorID	uint32		`gorm:"not_null" json:"author_id"`
-	CreatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	Title     string    `gorm:"size:255;not_null;unique" json:"title"`
+	Content   string    `gorm:"sie:255;not_null;" json:"content"`
+	Author    User      `json:"author"`
+	AuthorID  uint32    `gorm:"not_null" json:"author_id"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 func (p *Post) Prepare() {
@@ -64,7 +64,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 		return &[]Post{}, err
 	}
 	if len(posts) > 0 {
-		for i,_ := range posts {
+		for i, _ := range posts {
 			err := db.Debug().Model(&User{}).Where("id = ?", posts[i].AuthorID).Take(&posts[i].Author).Error
 			if err != nil {
 				return &[]Post{}, err
@@ -93,9 +93,9 @@ func (p *Post) UpdateAPost(db *gorm.DB, pid uint64) (*Post, error) {
 	var err error
 	db = db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&Post{}).UpdateColumns(
 		map[string]interface{}{
-			"title":		p.Title,
-			"content":		p.Content,
-			"updated_at":	time.Now(),
+			"title":      p.Title,
+			"content":    p.Content,
+			"updated_at": time.Now(),
 		},
 	)
 	err = db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&p).Error
