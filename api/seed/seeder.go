@@ -33,6 +33,10 @@ var posts = []models.Post {
 		Title: 		"Title 2",
 		Content:	"Hello World 2",
 	},
+	models.Post{
+		Title: 		"Title 3",
+		Content:	"Hello World 3",
+	},
 }
 
 func Load(db *gorm.DB) {
@@ -45,7 +49,7 @@ func Load(db *gorm.DB) {
 		log.Fatalf("canot migrate table: %v", err)
 	}
 
-	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_1", "users(id)", "cascade", "cascade").Error
+	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
