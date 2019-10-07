@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/modeltests/model_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/modeltests/user_model_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/modeltests/model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/modeltests/model_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,12 +24,6 @@
   <component name="GOROOT" path="C:\Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
   </component>
   <component name="ProjectId" id="1RjJX4FY5q20WKIHb12VHxQc1lI" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -53,7 +50,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/modeltests">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="fullstack" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -64,6 +61,45 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="TestFindAllUsers in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$/tests/modeltests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestFindAllUsers$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestSaveUser in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$/tests/modeltests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestSaveUser$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$/tests/modeltests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+        <item itemvalue="Go Test.TestFindAllUsers in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+        <item itemvalue="Go Test.TestSaveUser in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -82,7 +118,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
