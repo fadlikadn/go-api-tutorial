@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/controllertests/post_controller_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/controllertests/user_controller_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/posts_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/posts_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/users_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/users_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/controllertests/controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/controllertests/controller_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/controllertests/login_controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/controllertests/login_controller_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
