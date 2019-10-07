@@ -20,7 +20,7 @@ services:
       - 3306:3306
     environment:
       - MYSQL_ROOT_HOST=${DB_HOST}
-      - MYSQL_USER=${DB_USER
+      - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
@@ -38,7 +38,7 @@ services:
       - PMA_HOST=mysql # Note the "mysql". Must be the name of the what you used as the mysql services.
       - PMA_USER=${DB_USER}
       - PMA_PORT=${DB_PORT}
-      - PMA_PASSWORD=${DB_PASSWORD
+      - PMA_PASSWORD=${DB_PASSWORD}
     ports:
       - 9090:80
     restart: always
