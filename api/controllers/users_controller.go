@@ -25,11 +25,11 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	token := auth.ExtractToken(r)
-	if token == "" {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
+	//token := auth.ExtractToken(r)
+	//if token == "" {
+	//	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	//	return
+	//}
 	user.Prepare()
 	err = user.Validate("")
 	if err != nil {

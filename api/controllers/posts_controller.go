@@ -52,11 +52,11 @@ func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
-	token := auth.ExtractToken(r)
-	if token == "" {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
+	//token := auth.ExtractToken(r)
+	//if token == "" {
+	//	responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	//	return
+	//}
 	post := models.Post{}
 
 	posts, err := post.FindAllPosts(server.DB)
