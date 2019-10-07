@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/modeltests/user_model_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/modeltests/post_model_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/modeltests/model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/modeltests/model_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +47,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/modeltests">
+  <component name="RunManager" selected="Go Test.TestUpdateAPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="fullstack" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -61,7 +58,7 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="TestFindAllUsers in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestDeleteAPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="fullstack" />
       <working_directory value="$PROJECT_DIR$/tests/modeltests" />
       <framework value="gotest" />
@@ -69,10 +66,10 @@
       <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestFindAllUsers$" />
+      <pattern value="^TestDeleteAPost$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestSaveUser in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestFindAllPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="fullstack" />
       <working_directory value="$PROJECT_DIR$/tests/modeltests" />
       <framework value="gotest" />
@@ -80,7 +77,29 @@
       <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestSaveUser$" />
+      <pattern value="^TestFindAllPost$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestGetPostByID in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$/tests/modeltests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestGetPostByID$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUpdateAPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$/tests/modeltests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestUpdateAPost$" />
       <method v="2" />
     </configuration>
     <configuration name="go test github.com/fadlikadn/go-api-tutorial/tests/modeltests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -95,9 +114,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestUpdateAPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
         <item itemvalue="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
-        <item itemvalue="Go Test.TestFindAllUsers in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
-        <item itemvalue="Go Test.TestSaveUser in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+        <item itemvalue="Go Test.TestDeleteAPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+        <item itemvalue="Go Test.TestFindAllPost in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
+        <item itemvalue="Go Test.TestGetPostByID in github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
       </list>
     </recent_temporary>
   </component>
