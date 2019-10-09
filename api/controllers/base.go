@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -49,5 +50,19 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 func (server *Server) Run(addr string) {
 	fmt.Println("Listening to port 8080")
-	log.Fatal(http.ListenAndServe(addr, server.Router))
+	//log.Fatal(http.ListenAndServe(addr, server.Router))
+
+	// Apply the CORS middleware to our top-level router, with the defaults.
+	//log.Fatal(http.ListenAndServe(addr, handlers.CORS()(server.Router)))
+
+	//corsObj := handlers.AllowedOrigins([]string{"*"})
+	//log.Fatal(http.ListenAndServe(addr, handlers.CORS(corsObj)(server.Router)))
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:8080"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(server.Router)
+	log.Fatal(http.ListenAndServe(addr, handler))
+
 }
