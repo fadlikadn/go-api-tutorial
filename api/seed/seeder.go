@@ -39,6 +39,18 @@ var posts = []models.Post {
 	},
 }
 
+func MigrateOnly(db *gorm.DB) {
+	err := db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
+	if err != nil {
+		log.Fatalf("canot migrate table: %v", err)
+	}
+
+	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
+	}
+}
+
 func Load(db *gorm.DB) {
 	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}).Error
 	if err != nil {
