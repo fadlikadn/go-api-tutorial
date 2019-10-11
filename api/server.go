@@ -25,5 +25,5 @@ func Run() {
 	seed.Load(server.DB)
 	//seed.MigrateOnly(server.DB)
 
-	server.Run(":8081")
+	server.Run(":8080")
 }
