@@ -7,6 +7,7 @@ import (
 
 const (
 	ASSETS_DIR = "/assets/"
+	NODE_MODULES_DIR = "/node_modules/"
 )
 
 func (s *Server) initializeRoutes() {
@@ -24,6 +25,9 @@ func (s *Server) initializeRoutes() {
 	s.Router.
 		PathPrefix(ASSETS_DIR).
 		Handler(http.StripPrefix(ASSETS_DIR, http.FileServer(http.Dir("."+ASSETS_DIR))))
+	s.Router.
+		PathPrefix(NODE_MODULES_DIR).
+		Handler(http.StripPrefix(NODE_MODULES_DIR, http.FileServer(http.Dir("."+NODE_MODULES_DIR))))
 
 	/**
 	API Routes
@@ -33,6 +37,8 @@ func (s *Server) initializeRoutes() {
 
 	// Login Route
 	s.Router.HandleFunc("/api/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
+	s.Router.HandleFunc("/api/logout", middlewares.SetMiddlewareJSON(s.Logout)).Methods("GET")
+
 
 	// Users routes
 	s.Router.HandleFunc("/api/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")

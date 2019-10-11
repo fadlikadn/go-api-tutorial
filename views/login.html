@@ -19,7 +19,7 @@
     <div class="card card-login mx-auto mt-5">
         <div class="card-header">Login</div>
         <div class="card-body">
-            <form>
+            <form id="login-form">
                 <div class="form-group">
                     <div class="form-label-group">
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">
@@ -40,7 +40,8 @@
                         </label>
                     </div>
                 </div>
-                <a class="btn btn-primary btn-block" href="index.html">Login</a>
+                <!--<a class="btn btn-primary btn-block" href="index.html">Login</a>-->
+                <button type="button" id="btn_login_action" class="btn btn-primary btn-block">Login</button>
             </form>
             <div class="text-center">
                 <a class="d-block small mt-3" href="/register">Register an Account</a>
@@ -52,6 +53,8 @@
     <!-- Bootstrap core JavaScript-->
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/assets/js/custom/action.js"></script>
 
     <!-- Core plugin JavaScript-->
     <script src="/assets/vendor/jquery-easing/jquery.easing.min.js"></script>

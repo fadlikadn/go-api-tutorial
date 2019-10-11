@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
 	"github.com/rs/cors"
@@ -14,6 +15,18 @@ import (
 type Server struct {
 	DB     *gorm.DB
 	Router *mux.Router
+}
+
+var (
+	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
+	key = []byte("super-secret-key")
+	store = sessions.NewCookieStore(key)
+	base_url = "http://localhost:8080"
+)
+
+func init() {
+	key = []byte("super-secret-key")
+	store = sessions.NewCookieStore(key)
 }
 
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {

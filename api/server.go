@@ -9,7 +9,9 @@ import (
 	"os"
 )
 
-var server = controllers.Server{}
+var (
+	server = controllers.Server{}
+)
 
 func Run() {
 	var err error

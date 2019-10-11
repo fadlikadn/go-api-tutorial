@@ -9,9 +9,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 )
 
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "cookie-name")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		//responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -40,7 +47,37 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, errors.New("Error when format error"))
 		return
 	}
+
+	// Create Session
+	//session, _ := store.Get(r, "cookie-name")
+	//session.Values["authenticated"] = true
+	//_ = session.Save(r, w)
+
+	session.Values["authenticated"] = true
+	err = session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//http.Redirect(w, r, "/", http.StatusFound)
+
+	//var wg sync.WaitGroup
+	//for i := 0; i < 1; i++ {
+	//	wg.Add(1)
+	//	go server.CreateSession(&wg, w, r)
+	//}
+	//
+	//wg.Wait()
+
 	responses.JSON(w, http.StatusOK, token)
+}
+
+func (server *Server) CreateSession(wg *sync.WaitGroup, w http.ResponseWriter, r *http.Request) {
+	defer wg.Done()
+
+	session, _ := store.Get(r, "cookie-name")
+	session.Values["authenticated"] = true
+	_ = session.Save(r, w)
 }
 
 func (server *Server) SignIn(email, password string) (string, error) {
@@ -57,4 +94,16 @@ func (server *Server) SignIn(email, password string) (string, error) {
 		return "", err
 	}
 	return auth.CreateToken(user.ID)
+}
+
+func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "cookie-name")
+
+	// Revoke users authentication
+	session.Values["authenticated"] = false
+	_ = session.Save(r, w)
+
+	http.Redirect(w, r, base_url + "/login", 301)
+
+	//responses.JSON(w, http.StatusOK, true)
 }
