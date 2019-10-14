@@ -12,9 +12,13 @@ func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "cookie-name")
+	/*session, _ := store.Get(r, "cookie-name")
 
 	if session.Values["authenticated"] != true {
+		http.Redirect(w, r, base_url + "/login", 301)
+	}*/
+	session, ok := sessionManager.Get(r.Context(), "authenticated").(bool)
+	if !session || !ok {
 		http.Redirect(w, r, base_url + "/login", 301)
 	}
 

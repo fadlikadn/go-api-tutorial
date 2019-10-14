@@ -52,11 +52,11 @@ func MigrateOnly(db *gorm.DB) {
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}).Error
+	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}, &models.Session{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}).Error
 	if err != nil {
 		log.Fatalf("canot migrate table: %v", err)
 	}

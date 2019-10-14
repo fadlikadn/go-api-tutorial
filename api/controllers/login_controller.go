@@ -13,11 +13,11 @@ import (
 )
 
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "cookie-name")
+	/*session, err := store.Get(r, "cookie-name")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	}
+	}*/
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -53,12 +53,16 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	//session.Values["authenticated"] = true
 	//_ = session.Save(r, w)
 
-	session.Values["authenticated"] = true
+	// Using Gorilla Session
+	/*session.Values["authenticated"] = true
 	err = session.Save(r, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	}
+	}*/
+	// Using SCS Session Manager
+	sessionManager.Put(r.Context(), "authenticated", true)
+
 	//http.Redirect(w, r, "/", http.StatusFound)
 
 	//var wg sync.WaitGroup
@@ -97,11 +101,12 @@ func (server *Server) SignIn(email, password string) (string, error) {
 }
 
 func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "cookie-name")
+	/*session, _ := store.Get(r, "cookie-name")
 
 	// Revoke users authentication
 	session.Values["authenticated"] = false
-	_ = session.Save(r, w)
+	_ = session.Save(r, w)*/
+	sessionManager.Remove(r.Context(), "authenticated")
 
 	http.Redirect(w, r, base_url + "/login", 301)
 

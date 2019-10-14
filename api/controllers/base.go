@@ -2,14 +2,16 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
-	"github.com/rs/cors"
 	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
 type Server struct {
@@ -19,21 +21,23 @@ type Server struct {
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key = []byte("super-secret-key")
+	key = []byte(os.Getenv("API_SECRET"))
 	store = sessions.NewCookieStore(key)
 	base_url = "http://localhost:8080"
+	sessionManager *scs.SessionManager
 )
 
 func init() {
-	key = []byte("super-secret-key")
+	key = []byte(os.Getenv("API_SECRET"))
 	store = sessions.NewCookieStore(key)
 }
 
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	var err error
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 
 	if Dbdriver == "mysql" {
-		DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
+		DBURL := connectionString
 		server.DB, err = gorm.Open(Dbdriver, DBURL)
 		if err != nil {
 			fmt.Printf("Cannot connect to %s database", Dbdriver)
@@ -54,7 +58,15 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		}
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}) // database migration
+	/**
+		Handle Session using SCS package
+	 */
+	// Initialize a new session manager
+	sessionManager = scs.New()
+	sessionManager.Lifetime = 24 * time.Hour
+	// sessionManager.Store = mysqlstore.New(server.DB.DB())
+
+	server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}) // database migration
 
 	server.Router = mux.NewRouter().StrictSlash(true)
 
@@ -71,11 +83,14 @@ func (server *Server) Run(addr string) {
 	//corsObj := handlers.AllowedOrigins([]string{"*"})
 	//log.Fatal(http.ListenAndServe(addr, handlers.CORS(corsObj)(server.Router)))
 
-	c := cors.New(cors.Options{
+	// handle CORS using package cors
+	/*c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:8080"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(server.Router)
-	log.Fatal(http.ListenAndServe(addr, handler))
+	log.Fatal(http.ListenAndServe(addr, handler))*/
+
+	log.Fatal(http.ListenAndServe(addr, sessionManager.LoadAndSave(server.Router)))
 
 }
