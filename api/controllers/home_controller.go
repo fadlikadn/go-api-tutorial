@@ -17,9 +17,15 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 	if session.Values["authenticated"] != true {
 		http.Redirect(w, r, base_url + "/login", 301)
 	}*/
-	session, ok := sessionManager.Get(r.Context(), "authenticated").(bool)
+	/*session, ok := sessionManager.Get(r.Context(), "authenticated").(bool)
 	if !session || !ok {
 		http.Redirect(w, r, base_url + "/login", 301)
+	}*/
+	username := server.getUsername(r)
+	if username != "" {
+
+	} else {
+		http.Redirect(w, r,"/login", 302)
 	}
 
 	// Check if usr is authenticated
@@ -47,6 +53,10 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) LoginWeb(w http.ResponseWriter, r *http.Request) {
+	username := server.getUsername(r)
+	if username != "" {
+		http.Redirect(w, r, "/", 302)
+	}
 	var filepath = path.Join("views", "login.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {

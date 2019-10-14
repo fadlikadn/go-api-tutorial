@@ -61,7 +61,10 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}*/
 	// Using SCS Session Manager
-	sessionManager.Put(r.Context(), "authenticated", true)
+	//sessionManager.Put(r.Context(), "authenticated", true)
+
+	// Using SecureCookie
+	server.setSession(user.Email, w)
 
 	//http.Redirect(w, r, "/", http.StatusFound)
 
@@ -106,7 +109,8 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 	// Revoke users authentication
 	session.Values["authenticated"] = false
 	_ = session.Save(r, w)*/
-	sessionManager.Remove(r.Context(), "authenticated")
+	//sessionManager.Remove(r.Context(), "authenticated")
+	server.clearSession(w);
 
 	http.Redirect(w, r, base_url + "/login", 301)
 
