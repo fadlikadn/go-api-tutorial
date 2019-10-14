@@ -9,8 +9,8 @@ import (
 To format some error messages in a more readable manner, we need to a create a package to help us achieve that.
 */
 func FormatError(err string) error {
-	if strings.Contains(err, "nickname") {
-		return errors.New("Nickname Already Taken")
+	if strings.Contains(err, "name") {
+		return errors.New("Name Already Taken")
 	}
 
 	if strings.Contains(err, "email") {

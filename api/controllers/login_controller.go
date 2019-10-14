@@ -3,14 +3,46 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/fadlikadn/go-api-tutorial/api/auth"
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/fadlikadn/go-api-tutorial/api/responses"
+	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
+
+func (server *Server) Register(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	}
+	user := models.User{}
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	user.Prepare()
+	user.IsActive = false
+	err = user.Validate("")
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	registeredUser, err := user.SaveUser(server.DB)
+
+	if err != nil {
+		formattedError := formateerror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		return
+	}
+	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, registeredUser.ID))
+	responses.JSON(w, http.StatusCreated, registeredUser)
+}
 
 func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	/*session, err := store.Get(r, "cookie-name")

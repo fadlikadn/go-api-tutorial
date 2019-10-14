@@ -8,19 +8,31 @@ import (
 
 var users = []models.User {
 	models.User{
-		Nickname:	"Steven Victor",
-		Email:		"steven@gmail.com",
-		Password: 	"password",
+		Name:     "Steven Victor",
+		Email:    "steven@gmail.com",
+		Password: "password",
+		Phone:    "",
+		Company:  "Company 1",
+		IsActive: true,
+		Notes:    "",
 	},
 	models.User{
-		Nickname: "Martin Luther",
+		Name:     "Martin Luther",
 		Email:    "luther@gmail.com",
 		Password: "password",
+		Phone:    "",
+		Company:  "Company 2",
+		IsActive: true,
+		Notes:    "",
 	},
 	models.User{
-		Nickname: "Fadlika Dita Nurjanto",
+		Name:     "Fadlika Dita Nurjanto",
 		Email:    "fadlikadn@gmail.com",
 		Password: "password",
+		Phone:    "",
+		Company:  "Company 3",
+		IsActive: true,
+		Notes:    "",
 	},
 }
 
@@ -42,7 +54,7 @@ var posts = []models.Post {
 func MigrateOnly(db *gorm.DB) {
 	err := db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
 	if err != nil {
-		log.Fatalf("canot migrate table: %v", err)
+		log.Fatalf("cannot migrate table: %v", err)
 	}
 
 	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
@@ -58,7 +70,7 @@ func Load(db *gorm.DB) {
 	}
 	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}).Error
 	if err != nil {
-		log.Fatalf("canot migrate table: %v", err)
+		log.Fatalf("cannot migrate table: %v", err)
 	}
 
 	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error

@@ -3,10 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/base.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/base.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controllers/home_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/home_controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controllers/login_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/login_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controllers/posts_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/posts_controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controllers/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/models/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/models/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/seed/seeder.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/seed/seeder.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/utils/formateerror/formaterror.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/formateerror/formaterror.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/controllertests/controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/controllertests/controller_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/controllertests/user_controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/controllertests/user_controller_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/modeltests/model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/modeltests/model_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/modeltests/user_model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/tests/modeltests/user_model_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/register.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

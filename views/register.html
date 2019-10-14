@@ -20,27 +20,33 @@
     <div class="card card-register mx-auto mt-5">
         <div class="card-header">Register an Account</div>
         <div class="card-body">
-            <form>
+            <form id="register-form">
                 <div class="form-group">
                     <div class="form-row">
                         <div class="col-md-6">
                             <div class="form-label-group">
-                                <input type="text" id="firstName" class="form-control" placeholder="First name" required="required" autofocus="autofocus">
-                                <label for="firstName">First name</label>
+                                <input type="text" id="name" class="form-control" placeholder="Full Name" required="required" autofocus="autofocus">
+                                <label for="name">Full Name</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-label-group">
-                                <input type="text" id="lastName" class="form-control" placeholder="Last name" required="required">
-                                <label for="lastName">Last name</label>
+                                <input type="email" id="email" class="form-control" placeholder="Email" required="required">
+                                <label for="email">Email</label>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="required">
-                        <label for="inputEmail">Email address</label>
+                        <input type="text" id="phone" class="form-control" placeholder="Phone" required="required">
+                        <label for="phone">Phone</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <input type="text" id="company" class="form-control" placeholder="Company" required="required">
+                        <label for="company">Company</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -59,7 +65,8 @@
                         </div>
                     </div>
                 </div>
-                <a class="btn btn-primary btn-block" href="login.html">Register</a>
+                <!--<a class="btn btn-primary btn-block" href="login.html">Register</a>-->
+                <button type="button" id="btn_register_action" class="btn btn-primary btn-block">Register</button>
             </form>
             <div class="text-center">
                 <a class="d-block small mt-3" href="/login">Login Page</a>
@@ -72,6 +79,8 @@
 <!-- Bootstrap core JavaScript-->
 <script src="/assets/vendor/jquery/jquery.min.js"></script>
 <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/assets/js/custom/action.js"></script>
 
 <!-- Core plugin JavaScript-->
 <script src="/assetsvendor/jquery-easing/jquery.easing.min.js"></script>

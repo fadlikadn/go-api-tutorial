@@ -42,7 +42,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			inputJSON:    `{"nickname":"Pet", "email": "grand@gmail.com", "password": "password"}`,
 			statusCode:   500,
-			errorMessage: "Nickname Already Taken",
+			errorMessage: "Name Already Taken",
 		},
 		{
 			inputJSON:    `{"nickname":"Kan", "email": "kangmail.com", "password": "password"}`,
@@ -52,7 +52,7 @@ func TestCreateUser(t *testing.T) {
 		{
 			inputJSON:    `{"nickname": "", "email": "kan@gmail.com", "password": "password"}`,
 			statusCode:   422,
-			errorMessage: "Required Nickname",
+			errorMessage: "Required Name",
 		},
 		{
 			inputJSON:    `{"nickname": "Kan", "email": "", "password": "password"}`,
@@ -139,7 +139,7 @@ func TestGetUserByID(t *testing.T) {
 		{
 			id:         strconv.Itoa(int(user.ID)),
 			statusCode: 200,
-			nickname:   user.Nickname,
+			nickname:   user.Name,
 			email:      user.Email,
 		},
 		{
@@ -167,7 +167,7 @@ func TestGetUserByID(t *testing.T) {
 		assert.Equal(t, rr.Code, v.statusCode)
 
 		if v.statusCode == 200 {
-			assert.Equal(t, user.Nickname, responseMap["nickname"])
+			assert.Equal(t, user.Name, responseMap["nickname"])
 			assert.Equal(t, user.Email, responseMap["email"])
 		}
 	}
@@ -259,7 +259,7 @@ func TestUpdateUser(t *testing.T) {
 			updateJSON:   `{"nickname":"Kenny Morris", "email": "grand@gmail.com", "password": "password"}`,
 			statusCode:   500,
 			tokenGiven:   tokenString,
-			errorMessage: "Nickname Already Taken",
+			errorMessage: "Name Already Taken",
 		},
 		{
 			id:           strconv.Itoa(int(AuthID)),
@@ -273,7 +273,7 @@ func TestUpdateUser(t *testing.T) {
 			updateJSON:   `{"nickname": "", "email": "kan@gmail.com", "password": "password"}`,
 			statusCode:   422,
 			tokenGiven:   tokenString,
-			errorMessage: "Required Nickname",
+			errorMessage: "Required Name",
 		},
 		{
 			id:           strconv.Itoa(int(AuthID)),

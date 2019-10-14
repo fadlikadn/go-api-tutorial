@@ -33,9 +33,9 @@ func TestSaveUser(t *testing.T) {
 	}
 
 	newUser := models.User{
-		ID: 1,
-		Email: "test@gmail.com",
-		Nickname: "test",
+		ID:       1,
+		Email:    "test@gmail.com",
+		Name:     "test",
 		Password: "password",
 	}
 
@@ -46,7 +46,7 @@ func TestSaveUser(t *testing.T) {
 	}
 	assert.Equal(t, newUser.ID, savedUser.ID)
 	assert.Equal(t, newUser.Email, savedUser.Email)
-	assert.Equal(t, newUser.Nickname, savedUser.Nickname)
+	assert.Equal(t, newUser.Name, savedUser.Name)
 }
 
 func TestGetUserByID(t *testing.T) {
@@ -66,7 +66,7 @@ func TestGetUserByID(t *testing.T) {
 	}
 	assert.Equal(t, foundUser.ID, user.ID)
 	assert.Equal(t, foundUser.Email, user.Email)
-	assert.Equal(t, foundUser.Nickname, user.Nickname)
+	assert.Equal(t, foundUser.Name, user.Name)
 }
 
 func TestUpdateAUser(t *testing.T) {
@@ -81,10 +81,10 @@ func TestUpdateAUser(t *testing.T) {
 	}
 
 	userUpdate := models.User{
-		ID:        1,
-		Nickname:  "modiUpdate",
-		Email:     "modiupdate@gmail.com",
-		Password:  "password",
+		ID:       1,
+		Name:     "modiUpdate",
+		Email:    "modiupdate@gmail.com",
+		Password: "password",
 	}
 	updatedUser, err := userUpdate.UpdateAUser(server.DB, user.ID)
 	if err != nil {
@@ -93,7 +93,7 @@ func TestUpdateAUser(t *testing.T) {
 	}
 	assert.Equal(t, updatedUser.ID, userUpdate.ID)
 	assert.Equal(t, updatedUser.Email, userUpdate.Email)
-	assert.Equal(t, updatedUser.Nickname, userUpdate.Nickname)
+	assert.Equal(t, updatedUser.Name, userUpdate.Name)
 }
 
 func TestDeleteAUser(t *testing.T) {
