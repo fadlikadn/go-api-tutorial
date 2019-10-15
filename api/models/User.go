@@ -86,6 +86,13 @@ func (u *User) Validate(action string) error {
 		}
 
 		return nil
+	case "register":
+		// TODO complete register validation
+		if u.Password == "" {
+			return errors.New("Required Password")
+		}
+
+		return nil
 	default:
 		if u.Name == "" {
 			return errors.New("Required Name")

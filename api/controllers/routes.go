@@ -18,6 +18,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/login", s.LoginWeb).Methods("GET")
 	s.Router.HandleFunc("/register", s.RegisterWeb).Methods("GET")
 	s.Router.HandleFunc("/forgotpassword", s.ForgotPasswordWeb).Methods("GET")
+	s.Router.HandleFunc("/activation-pending", s.ActivationPending).Methods("GET")
 
 	/**
 	Static Files such as JS, CSS, others

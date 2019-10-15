@@ -12,27 +12,12 @@ func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
-	/*session, _ := store.Get(r, "cookie-name")
-
-	if session.Values["authenticated"] != true {
-		http.Redirect(w, r, base_url + "/login", 301)
-	}*/
-	/*session, ok := sessionManager.Get(r.Context(), "authenticated").(bool)
-	if !session || !ok {
-		http.Redirect(w, r, base_url + "/login", 301)
-	}*/
 	username := server.getUsername(r)
 	if username != "" {
 
 	} else {
 		http.Redirect(w, r,"/login", 302)
 	}
-
-	// Check if usr is authenticated
-	/*if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		// redirect to login
-		http.Redirect(w, r, base_url + "/login", 301)
-	}*/
 
 	var filepath = path.Join("views", "index.html")
 	var tmpl, err = template.ParseFiles(filepath)
@@ -45,6 +30,27 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 		"title": "Learning Golang",
 		"name": "Mitrais",
 	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (server *Server) ActivationPending(w http.ResponseWriter, r *http.Request) {
+	username := server.getUsername(r)
+	if username != "" {
+		http.Redirect(w, r, "/", 302)
+	}
+
+	var filepath = path.Join("views", "activation-pending.html")
+	var tmpl, err = template.ParseFiles(filepath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var data = map[string]interface{} {}
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
