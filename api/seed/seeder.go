@@ -26,8 +26,8 @@ var users = []models.User {
 		Notes:    "",
 	},
 	models.User{
-		Name:     "Fadlika Dita Nurjanto",
-		Email:    "fadlikadn@gmail.com",
+		Name:     "Fadlika",
+		Email:    "fadlikadn2@gmail.com",
 		Password: "password",
 		Phone:    "",
 		Company:  "Company 3",

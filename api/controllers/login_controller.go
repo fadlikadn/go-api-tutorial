@@ -38,6 +38,15 @@ func (server *Server) Register(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
+
+	// TODO implement sending email using mailgun
+	/*_, err = email.SendActivationEmail("fadlikadn@gmail.com")
+
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		//responses.ERROR(w, http.StatusInternalServerError, errors.New("Error when sending email"))
+	}*/
+
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, registeredUser.ID))
 	responses.JSON(w, http.StatusCreated, registeredUser)
 }

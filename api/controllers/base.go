@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //mysql database driver
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
@@ -88,14 +89,14 @@ func (server *Server) Run(addr string) {
 	//log.Fatal(http.ListenAndServe(addr, handlers.CORS(corsObj)(server.Router)))
 
 	// handle CORS using package cors
-	/*c := cors.New(cors.Options{
+	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:8080"},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(server.Router)
-	log.Fatal(http.ListenAndServe(addr, handler))*/
+	log.Fatal(http.ListenAndServe(addr, handler))
 
-	log.Fatal(http.ListenAndServe(addr, sessionManager.LoadAndSave(server.Router)))
+	//log.Fatal(http.ListenAndServe(addr, sessionManager.LoadAndSave(server.Router)))
 
 }
 
