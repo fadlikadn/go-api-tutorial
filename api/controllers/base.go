@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"time"
 )
 
@@ -20,6 +21,9 @@ type Server struct {
 	DB     *gorm.DB
 	Router *mux.Router
 }
+
+type M map[string]interface{}
+
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
@@ -30,6 +34,16 @@ var (
 	cookieHandler = securecookie.New(
 		securecookie.GenerateRandomKey(64),
 		securecookie.GenerateRandomKey(32))
+	mainTemplateString = []string{
+		path.Join("views", "_header.html"),
+		path.Join("views", "_top-navbar.html"),
+		path.Join("views", "_sidebar.html"),
+		path.Join("views", "_content.html"),
+		path.Join("views", "_footer.html"),
+		path.Join("views", "_modals.html"),
+		path.Join("views", "_js.html"),
+	}
+	baseTitle = "Service Management - "
 )
 
 func init() {

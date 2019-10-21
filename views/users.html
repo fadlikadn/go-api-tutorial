@@ -1,0 +1,195 @@
+{{ define "users" }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        {{ template "_header" .title}}
+    </head>
+    <body>
+    {{ template "_top-navbar" }}
+    <div id="wrapper">
+        {{ template "_sidebar" }}
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+                <!-- Breadcrumbs-->
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Users Management</li>
+                </ol>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="fas fa-table"></i>
+                        Manage Data User
+                        <span class="float-right">
+                            <button class="btn-sm btn-primary" id="btn_add_user">Add User</button>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="table-users" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Company</th>
+                                    <th>Is Active</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody class="users-data-container">
+                                <tr>
+                                    <td>Administrator</td>
+                                    <td>admin@servicesystem.com</td>
+                                    <td>085729681962</td>
+                                    <td>Mitrais</td>
+                                    <td>true</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr><tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr><tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+                                <tr>
+                                    <td>Guest</td>
+                                    <td>guest@servicesystem.com</td>
+                                    <td>0818046788981</td>
+                                    <td>Mitrais</td>
+                                    <td>false</td>
+                                </tr>
+
+
+
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                </div>
+            </div>
+
+            {{ template "_footer" }}
+        </div>
+    </div>
+
+    {{ template "_modals" }}
+
+    {{ template "_js" }}
+    <script>
+        $(function() {
+            Users.init();
+        });
+    </script>
+
+    </body>
+    </html>
+{{ end }}

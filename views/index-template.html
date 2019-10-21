@@ -1,0 +1,25 @@
+{{ define "index" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ template "_header" .title}}
+</head>
+<body>
+    {{ template "_top-navbar" }}
+    <div id="wrapper">
+        {{ template "_sidebar" }}
+
+        <div id="content-wrapper">
+            {{ template "_content"}}
+
+            {{ template "_footer" }}
+        </div>
+    </div>
+
+    {{ template "_modals" }}
+
+    {{ template "_js" }}
+
+</body>
+</html>
+{{ end }}

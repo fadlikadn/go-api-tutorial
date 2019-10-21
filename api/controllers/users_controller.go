@@ -9,8 +9,10 @@ import (
 	"github.com/fadlikadn/go-api-tutorial/api/responses"
 	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
 	"github.com/gorilla/mux"
+	"html/template"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"strconv"
 )
 
@@ -148,4 +150,27 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
+}
+
+func (server *Server) ManageUserWeb(w http.ResponseWriter, r *http.Request) {
+	username := server.getUsername(r)
+	if username != "" {
+
+	} else {
+		http.Redirect(w, r,"/login", 302)
+	}
+
+	// handle parse template
+
+	usersTemplate := append(mainTemplateString, path.Join("views", "users.html"))
+	var tmpl = template.Must(template.ParseFiles(usersTemplate...))
+
+	var data = M{
+		"title": baseTitle + "User Management",
+	}
+
+	err := tmpl.ExecuteTemplate(w, "users", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

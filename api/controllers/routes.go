@@ -19,6 +19,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/register", s.RegisterWeb).Methods("GET")
 	s.Router.HandleFunc("/forgotpassword", s.ForgotPasswordWeb).Methods("GET")
 	s.Router.HandleFunc("/activation-pending", s.ActivationPending).Methods("GET")
+	s.Router.HandleFunc("/users", s.ManageUserWeb).Methods("GET")
 
 	/**
 	Static Files such as JS, CSS, others
@@ -45,6 +46,7 @@ func (s *Server) initializeRoutes() {
 	// Users routes
 	s.Router.HandleFunc("/api/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
 	s.Router.HandleFunc("/api/users", middlewares.SetMiddlewareJSON(s.GetUsers)).Methods("GET")
+	s.Router.HandleFunc("/api/session/users", middlewares.SetMiddlewareJSON(s.GetUsersSession)).Methods("GET")
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareJSON(s.GetUser)).Methods("GET")
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT")
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")

@@ -19,19 +19,34 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r,"/login", 302)
 	}
 
-	var filepath = path.Join("views", "index.html")
-	var tmpl, err = template.ParseFiles(filepath)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	//var filepath = path.Join("views", "index.html")
+	//var tmpl, err = template.ParseFiles(filepath)
+	//if err != nil {
+	//	http.Error(w, err.Error(), http.StatusInternalServerError)
+	//	return
+	//}
 
-	var data = map[string]interface{} {
+	indexTemplate := append(mainTemplateString, path.Join("views", "index-template.html"))
+	var tmpl = template.Must(template.ParseFiles(indexTemplate...))
+
+	//var tmpl = template.Must(template.ParseFiles(
+	//	path.Join("views", "index-template.html"),
+	//	path.Join("views", "_header.html"),
+	//	path.Join("views", "_top-navbar.html"),
+	//	path.Join("views", "_sidebar.html"),
+	//	path.Join("views", "_content.html"),
+	//	path.Join("views", "_footer.html"),
+	//	path.Join("views", "_modals.html"),
+	//	path.Join("views", "_js.html"),
+	//))
+
+	var data = M{
 		"title": "Learning Golang",
 		"name": "Mitrais",
 	}
 
-	err = tmpl.Execute(w, data)
+	//err := tmpl.Execute(w, data)
+	err := tmpl.ExecuteTemplate(w, "index", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -50,7 +65,7 @@ func (server *Server) ActivationPending(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var data = map[string]interface{} {}
+	var data = M{}
 
 	err = tmpl.Execute(w, data)
 	if err != nil {

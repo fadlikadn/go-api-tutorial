@@ -17,7 +17,7 @@ type User struct {
 	Email     string `gorm:"size:100;not null;unique" json:"email"`
 	Phone     string `gorm:"size:20;" json:"phone"`
 	Company   string `gorm:"size:100;not null;unique" json:"company"`
-	IsActive  bool
+	IsActive  bool	`gorm:"type:bool;" json:"is_active"`
 	Notes     string	`gorm:"size:255" json:"notes"`
 	Password  string    `gorm:"size:100;not null;" json:"password"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
@@ -129,7 +129,7 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
 	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err = db.Select("id, name, email, phone, company, is_active, notes").Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
@@ -138,7 +138,7 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	var err error
-	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+	err = db.Select("id, name, email, phone, company, is_active, notes").Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
