@@ -78,8 +78,8 @@ $(function() {
                         "data": "is_active", "defaultContent": ""
                     },
                     {
-                        "data": "id", render: function(data) {
-                            return `<a href='#' class='btn btn-sm btn-success user_edit' id-key=${data} >Edit</a> &nbsp; <a href='#' class='btn btn-sm btn-danger user_delete' id-key=${data}>Delete</a>`;
+                        "data": "id", render: function(data, type, row, meta) {
+                            return `<a href='#' data-target='#userEditModal' data-toggle="modal" class='btn btn-sm btn-success user_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' class='btn btn-sm btn-danger user_delete' data-key=${data} >Delete</a>`;
                         }
                     }
                 ]
@@ -88,41 +88,81 @@ $(function() {
         _APIs: function() {
 
         },
-        _loadUsersAPI: function(callback) {
-            // var self = this;
-            // $.ajax({
-            //     url: base_url + "/api/session/users",
-            //     method: 'GET',
-            //     dataType: 'json',
-            //     contentType: 'application/json',
-            //     success: callback,
-            // }).catch(function(err) {
-            //     console.log(err);
-            // });
-        },
-        _loadPage: function() {
-            this._loadUsersAPI(function(res) {
-                // console.log(res);
-                // var $userTable = $('.users-data-container');
-                // $userTable.empty();
-                // var usersData = "";
-                // res.forEach(function(item, index) {
-                //     var userData = `<tr>
-                //                         <td>${item.name}</td>
-                //                         <td>${item.email}</td>
-                //                         <td>${item.phone}</td>
-                //                         <td>${item.company}</td>
-                //                         <td>${item.IsActive}</td>
-                //                     </tr>`;
-                //     usersData = usersData + userData;
-                // });
-                // $userTable.html(usersData);
+        _handleButtonEvents: function() {
+            var self = this;
+
+            $('#userEditModal').on('show.bs.modal', function(e){
+                if ($(e.relatedTarget).data('key') != undefined) {
+                    // Edit
+                    var userId = $(e.relatedTarget).data('key');
+                    var userObject = $(e.relatedTarget).data('object');
+                    console.log(userId, userObject);
+                    console.log('prepare for edit');
+                    self._mapUserModal(userObject);
+                    $('#btnUserEditSave').attr('data-mode', 'edit');
+                } else {
+                    // Add
+                    console.log('prepare for add');
+                    $('#btnUserEditSave').attr('data-mode', 'add');
+                    self._mapUserModal(null);
+                }
             });
+
+            $('#userEditModal').on('hide.bs.modal', function(e) {
+                $('#user-form').trigger('reset');
+            });
+
+            $(document).on('click', '#btnUserEditSave', function(e) {
+                e.preventDefault();
+                var url = null;
+                var payload = null;
+                if ($(this).data('mode') === 'add') {
+                    // add
+                    url = base_url + '/api/session/users';
+                    payload = {
+                        name: $('#userEditModal #user-name').val(),
+                        email: $('#userEditModal #user-email').val(),
+                        phone: $('#userEditModal #user-phone').val(),
+                        company: $('#userEditModal #user-company').val(),
+                        is_active: (parseInt($('#userEditModal #user-is-active').val()) === 1),
+                        password: $('#userEditModal #user-password').val(),
+                    };
+                    console.log(payload);
+                    // console.log(url, payload);
+                } else {
+                    // add
+                }
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json'
+                }).then(function(res) {
+                    console.log(res);
+                    $('#table-users').DataTable().ajax.reload();
+                    $('#userEditModal').modal('hide');
+                }).catch(function(err) {
+                    console.log(err);
+                });
+            });
+        },
+        _mapUserModal: function(user) {
+            if (user !== null) {
+                $('#userEditModal #user-name').val(user.name);
+                $('#userEditModal #user-email').val(user.email);
+                $('#userEditModal #user-phone').val(user.phone);
+                $('#userEditModal #user-company').val(user.company);
+                $('#userEditModal #user-is-active').val((user.is_active) ? 1 : 0);
+            } else {
+                $('#user-form').trigger('reset');
+            }
+
         },
         init: function() {
             this._datatables();
             this._APIs();
-            this._loadPage();
+            this._handleButtonEvents();
         }
     };
 

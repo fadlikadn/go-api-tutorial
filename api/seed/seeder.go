@@ -22,7 +22,7 @@ var users = []models.User {
 		Password: "password",
 		Phone:    "",
 		Company:  "Company 2",
-		IsActive: true,
+		IsActive: false,
 		Notes:    "",
 	},
 	models.User{

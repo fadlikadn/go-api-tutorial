@@ -2,24 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/api/controllers/users_session_controller.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_content.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_footer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_header.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_js.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_modals.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_sidebar.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/_top-navbar.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/index-template.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/users.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/base.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/base.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/home_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/home_controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/controllers/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/controllers/users_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/users_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/models/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/models/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controllers/users_session_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/users_session_controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/seed/seeder.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/seed/seeder.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/custom/action.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/custom/action.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/_modals.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/_modals.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/users.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -87,6 +76,15 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="go build users_session_controller.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="fullstack" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/api/controllers/users_session_controller.go" />
+      <package value="github.com/fadlikadn/go-api-tutorial" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestDeleteUser in github.com/fadlikadn/go-api-tutorial/tests/controllertests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="fullstack" />
       <working_directory value="$PROJECT_DIR$/tests/controllertests" />
@@ -96,17 +94,6 @@
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
       <pattern value="^TestDeleteUser$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestGetUserByID in github.com/fadlikadn/go-api-tutorial/tests/controllertests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="fullstack" />
-      <working_directory value="$PROJECT_DIR$/tests/controllertests" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/fadlikadn/go-api-tutorial/tests/controllertests" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestGetUserByID$" />
       <method v="2" />
     </configuration>
     <configuration name="TestUpdateUser in github.com/fadlikadn/go-api-tutorial/tests/controllertests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -142,11 +129,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build users_session_controller.go" />
         <item itemvalue="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/modeltests" />
         <item itemvalue="Go Test.go test github.com/fadlikadn/go-api-tutorial/tests/controllertests" />
         <item itemvalue="Go Test.TestDeleteUser in github.com/fadlikadn/go-api-tutorial/tests/controllertests" />
         <item itemvalue="Go Test.TestUpdateUser in github.com/fadlikadn/go-api-tutorial/tests/controllertests" />
-        <item itemvalue="Go Test.TestGetUserByID in github.com/fadlikadn/go-api-tutorial/tests/controllertests" />
       </list>
     </recent_temporary>
   </component>
