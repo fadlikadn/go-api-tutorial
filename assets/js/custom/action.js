@@ -79,7 +79,7 @@ $(function() {
                     },
                     {
                         "data": "id", render: function(data, type, row, meta) {
-                            return `<a href='#' data-target='#userEditModal' data-toggle="modal" class='btn btn-sm btn-success user_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' class='btn btn-sm btn-danger user_delete' data-key=${data} >Delete</a>`;
+                            return `<a href='#' data-target='#userEditModal' data-toggle="modal" class='btn btn-sm btn-success user_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#userDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger user_delete' data-key=${data} >Delete</a>`;
                         }
                     }
                 ]
@@ -90,8 +90,19 @@ $(function() {
         },
         _handleButtonEvents: function() {
             var self = this;
+            var $userEditModal = $('#userEditModal');
+            var $userDeleteModal = $('#userDeleteModal');
 
-            $('#userEditModal').on('show.bs.modal', function(e){
+            $userDeleteModal.on('show.bs.modal', function(e) {
+                if ($(e.relatedTarget).data('key') != undefined) {
+                    // Delete
+                    var userId = $(e.relatedTarget).data('key');
+                    console.log(userId);
+                    $('#btnUserDelete').attr('data-id', userId);
+                }
+            });
+
+            $userEditModal.on('show.bs.modal', function(e){
                 if ($(e.relatedTarget).data('key') != undefined) {
                     // Edit
                     var userId = $(e.relatedTarget).data('key');
@@ -100,6 +111,7 @@ $(function() {
                     console.log('prepare for edit');
                     self._mapUserModal(userObject);
                     $('#btnUserEditSave').attr('data-mode', 'edit');
+                    $('#user-id').val(userId);
                 } else {
                     // Add
                     console.log('prepare for add');
@@ -108,17 +120,38 @@ $(function() {
                 }
             });
 
-            $('#userEditModal').on('hide.bs.modal', function(e) {
+            $userEditModal.on('hide.bs.modal', function(e) {
                 $('#user-form').trigger('reset');
+            });
+
+            $(document).on('click', '#btnUserDelete', function(e) {
+                e.preventDefault();
+                console.log($('#btnUserDelete').attr('data-id'));
+                var url = base_url + '/api/session/users/' + $('#btnUserDelete').attr('data-id');
+
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    contentType: 'application/json'
+                }).then(function(res) {
+                    console.log(res);
+                    $('#table-users').DataTable().ajax.reload();
+                    $('#userDeleteModal').modal('hide');
+                }).catch(function(err) {
+                    console.log(err);
+                });
             });
 
             $(document).on('click', '#btnUserEditSave', function(e) {
                 e.preventDefault();
                 var url = null;
                 var payload = null;
-                if ($(this).data('mode') === 'add') {
+                var method = '';
+                var mode = $('#btnUserEditSave').attr('data-mode');
+                if (mode === 'add') {
                     // add
                     url = base_url + '/api/session/users';
+                    method = 'POST';
                     payload = {
                         name: $('#userEditModal #user-name').val(),
                         email: $('#userEditModal #user-email').val(),
@@ -127,15 +160,23 @@ $(function() {
                         is_active: (parseInt($('#userEditModal #user-is-active').val()) === 1),
                         password: $('#userEditModal #user-password').val(),
                     };
-                    console.log(payload);
-                    // console.log(url, payload);
                 } else {
-                    // add
+                    // edit
+                    method = 'PUT';
+                    url = base_url + '/api/session/users/' + $('#user-id').val();
+                    payload = {
+                        name: $('#userEditModal #user-name').val(),
+                        email: $('#userEditModal #user-email').val(),
+                        phone: $('#userEditModal #user-phone').val(),
+                        company: $('#userEditModal #user-company').val(),
+                        is_active: (parseInt($('#userEditModal #user-is-active').val()) === 1),
+                        password: $('#userEditModal #user-password').val(),
+                    };
                 }
 
                 $.ajax({
                     url: url,
-                    method: 'POST',
+                    method: method,
                     data: JSON.stringify(payload),
                     contentType: 'application/json'
                 }).then(function(res) {

@@ -33,11 +33,14 @@ func VerifyPassword(hashedPassword, password string) error {
 }
 
 func (u *User) BeforeSave() error {
-	hashedPassword, err := Hash(u.Password)
-	if err != nil {
-		return err
+	if u.Password != "" {
+		hashedPassword, err := Hash(u.Password)
+		if err != nil {
+			return err
+		}
+		u.Password = string(hashedPassword)
+		return nil
 	}
-	u.Password = string(hashedPassword)
 	return nil
 }
 
@@ -57,9 +60,9 @@ func (u *User) Validate(action string) error {
 		if u.Name == "" {
 			return errors.New("Required Name")
 		}
-		if u.Password == "" {
-			return errors.New("Required Password")
-		}
+		//if u.Password == "" {
+		//	return errors.New("Required Password")
+		//}
 		if u.Email == "" {
 			return errors.New("Required Email")
 		}
@@ -154,13 +157,35 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
-		map[string]interface{}{
+	var data map[string]interface{}
+	if u.Password != "" {
+		data = map[string]interface{}{
 			"password":  u.Password,
 			"name":  u.Name,
 			"email":     u.Email,
+			"phone":     u.Phone,
+			"company":     u.Company,
+			"is_active":     u.IsActive,
 			"update_at": time.Now(),
-		},
+		}
+	} else {
+		data = map[string]interface{}{
+			"name":  u.Name,
+			"email":     u.Email,
+			"phone":     u.Phone,
+			"company":     u.Company,
+			"is_active":     u.IsActive,
+			"update_at": time.Now(),
+		}
+	}
+	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+		//map[string]interface{}{
+		//	"password":  u.Password,
+		//	"name":  u.Name,
+		//	"email":     u.Email,
+		//	"update_at": time.Now(),
+		//},
+		data,
 	)
 
 	if db.Error != nil {

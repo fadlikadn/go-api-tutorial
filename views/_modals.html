@@ -24,6 +24,23 @@
     </div>
 
     <!-- TODO User Delete Modal -->
+    <div class="modal fade" id="userDeleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete User" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure want to delete this user?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Delete" button below if you sure want to delete this user.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="btnUserDelete" data-id="" href="#">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- User Edit Modal -->
     <div class="modal fade" id="userEditModal" tabindex="-1" role="dialog" aria-labelledby="Edit User" aria-hidden="true">
@@ -68,6 +85,7 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
+                        <input type="hidden" id="user-id" value=""/>
                     </form>
                 </div>
                 <div class="modal-footer">

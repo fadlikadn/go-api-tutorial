@@ -50,7 +50,10 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/api/session/users", middlewares.SetMiddlewareJSON(s.GetUsersSession)).Methods("GET")
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareJSON(s.GetUser)).Methods("GET")
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT")
+	s.Router.HandleFunc("/api/session/users/{id}", middlewares.SetMiddlewareJSON(s.UpdateUserSession)).Methods("PUT")
+
 	s.Router.HandleFunc("/api/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
+	s.Router.HandleFunc("/api/session/users/{id}", s.DeleteUserSession).Methods("DELETE")
 
 	// Posts routes
 	s.Router.HandleFunc("/api/posts", middlewares.SetMiddlewareJSON(s.CreatePost)).Methods("POST")
