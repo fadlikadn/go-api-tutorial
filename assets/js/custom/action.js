@@ -6,6 +6,8 @@ var Login = {};
 var Register = {};
 var Users = {};
 var Customers = {};
+var ServiceTransactions = {};
+// TODO Implement JS handler for ServiceTransactions
 
 $(function() {
     Register = {
@@ -399,6 +401,83 @@ $(function() {
             this._APIs();
             this._handleButtonEvents();
         }
-    }
+    };
+
+    ServiceTransactions = {
+        _datatables: function() {
+            $('#table-service-transactions').DataTable({
+                "processing": true,
+                "searching": true,
+                "serverSide": false,
+                "paging": true,
+                "bLengthChange": true,
+                "ordering": true,
+                "ajax": {
+                    "url": base_url + "/api/service-transactions",
+                    "dataSrc": "",
+                    "data": function(d) {
+                        console.log(d);
+                    },
+                    "error": function(d) {
+                        console.log(d);
+                    }
+                },
+                "columns": [
+                    {
+                        "data": "service_date", render: function(data, type, row, meta) {
+                            // TODO parse date and time using MomentJS
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "invoice_no", "defaultContent": ""
+                    },
+                    {
+                        "data": "customer", render: function(data, type, row, meta) {
+                            return data.name;
+                        }
+                    },
+                    {
+                        "data": "item_name", "defaultContent": ""
+                    },
+                    {
+                        "data": "damage_type", "defaultContent": ""
+                    },
+                    {
+                        "data": "repair_type", "defaultContent": ""
+                    },
+                    {
+                        "data": "price", "defaultContent": ""
+                    },
+                    {
+                        "data": "total_price", "defaultContent": ""
+                    },
+                    {
+                        "data": "status", "defaultContent": ""
+                    },
+                    {
+                        "data": "id", render: function(data, type, row, meta) {
+                            return `<a href='#' data-target='#customerEditModal' data-toggle="modal" class='btn btn-sm btn-success customer_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#customerDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger customer_delete' data-key=${data} >Delete</a>`;
+                        }
+                    }
+                ]
+            });
+        },
+        _APIs: function() {
+
+        },
+        _handleButtonEvents: function() {
+            // Service Transaction Handle Button Events
+            // TODO implement button handler for service transaction management page
+        },
+        _mapServiceTransactionModal: function(serviceTransaction) {
+            // TODO implement modal for service transaction
+        },
+        init: function() {
+            this._datatables();
+            this._APIs();
+            this._handleButtonEvents();
+        }
+    };
 });
 

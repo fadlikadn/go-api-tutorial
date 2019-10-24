@@ -4,6 +4,7 @@ import (
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/jinzhu/gorm"
 	"log"
+	"time"
 )
 
 var users = []models.User {
@@ -51,6 +52,25 @@ var posts = []models.Post {
 	},
 }
 
+var serviceTransactions = []models.ServiceTransaction{
+	models.ServiceTransaction{
+		ServiceDate: time.Date(2019, 8, 31, 0,0, 0, 0, time.UTC),
+		InvoiceNo:   "1000",
+		CustomerID:  1,
+		ItemName:    "Lenovo B-470",
+		DamageType:  "Mati",
+		Equipment:   "Charger, Kabel Power, Kabel Data",
+		Description: "Garansi 1 bulan",
+		Technician:  "Agus Widodo",
+		RepairType:  "Service Mainboard",
+		SparePart:   "Mainboard ganti",
+		Price:       650000,
+		TotalPrice:  650000,
+		TakenDate:   time.Date(2019, 9, 20, 0, 0, 0, 0, time.UTC),
+		Status:      "Masuk",
+	},
+}
+
 var customers = []models.Customer{
 	models.Customer{
 		Name:      "Mualifin",
@@ -76,7 +96,7 @@ var customers = []models.Customer{
 }
 
 func MigrateOnly(db *gorm.DB) {
-	err := db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
+	err := db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Customer{}, &models.ServiceTransaction{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
@@ -85,19 +105,32 @@ func MigrateOnly(db *gorm.DB) {
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
+
+	// Service Transaction Foreign Key
+	err = db.Debug().Model(&models.ServiceTransaction{}).AddForeignKey("customer_id", "customers{id}", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
+	}
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.User{}, &models.Session{}, &models.Customer{}).Error
+	err := db.Debug().DropTableIfExists(&models.Post{}, &models.ServiceTransaction{}, &models.User{}, &models.Session{}, &models.Customer{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}, &models.Customer{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}, &models.Customer{}, &models.ServiceTransaction{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
 
+	// Post Foreign Key
 	err = db.Debug().Model(&models.Post{}).AddForeignKey("author_id", "users(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key error: %v", err)
+	}
+
+	// Service Transaction Foreign Key
+	err = db.Debug().Model(&models.ServiceTransaction{}).AddForeignKey("customer_id", "customers(id)", "cascade", "cascade").Error
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
 	}
@@ -119,6 +152,12 @@ func Load(db *gorm.DB) {
 		err = db.Debug().Model(&models.Customer{}).Create(&customers[j]).Error
 		if err != nil {
 			log.Fatalf("cannot seed customers table: %v", err)
+		}
+	}
+	for i, _ := range serviceTransactions {
+		err = db.Debug().Model(&models.ServiceTransaction{}).Create(&serviceTransactions[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed service transactions table: %v", err)
 		}
 	}
 }

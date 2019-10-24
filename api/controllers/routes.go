@@ -24,6 +24,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/", middlewares.SetMiddlewareAuthenticationSession(s.HomeWeb)).Methods("GET")
 	s.Router.HandleFunc("/users", middlewares.SetMiddlewareAuthenticationSession(s.ManageUserWeb)).Methods("GET")
 	s.Router.HandleFunc("/customers", middlewares.SetMiddlewareAuthenticationSession(s.ManageCustomerWeb)).Methods("GET")
+	s.Router.HandleFunc("/service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.ManageServiceTransactionWeb)).Methods("GET")
 
 	/**
 	Static Files such as JS, CSS, others
@@ -46,7 +47,6 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/api/register", middlewares.SetMiddlewareJSON(s.Register)).Methods("POST")
 	s.Router.HandleFunc("/api/logout", middlewares.SetMiddlewareJSON(s.Logout)).Methods("GET")
 
-
 	// Users routes
 	s.Router.HandleFunc("/api/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
 	s.Router.HandleFunc("/api/users", middlewares.SetMiddlewareJSON(s.GetUsers)).Methods("GET")
@@ -65,6 +65,12 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/api/customers/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.UpdateCustomer))).Methods("PUT")
 	s.Router.HandleFunc("/api/customers/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.DeleteCustomer))).Methods("DELETE")
 
+	// Service Transaction routes
+	s.Router.HandleFunc("/api/service-transactions", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.GetServiceTransactions))).Methods("GET")
+	s.Router.HandleFunc("/api/service-transactions", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.CreateServiceTransaction))).Methods("POST")
+	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.GetServiceTransaction))).Methods("GET")
+	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.UpdateServiceTransaction))).Methods("PUT")
+	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.DeleteServiceTransaction))).Methods("DELETE")
 
 	// Posts routes
 	s.Router.HandleFunc("/api/posts", middlewares.SetMiddlewareJSON(s.CreatePost)).Methods("POST")
