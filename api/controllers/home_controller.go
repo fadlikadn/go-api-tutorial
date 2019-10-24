@@ -43,6 +43,7 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 	var data = M{
 		"title": "Learning Golang",
 		"name": "Mitrais",
+		"sidebar": "home",
 	}
 
 	//err := tmpl.Execute(w, data)

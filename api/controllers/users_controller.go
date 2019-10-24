@@ -167,6 +167,7 @@ func (server *Server) ManageUserWeb(w http.ResponseWriter, r *http.Request) {
 
 	var data = M{
 		"title": baseTitle + "User Management",
+		"sidebar": "user",
 	}
 
 	err := tmpl.ExecuteTemplate(w, "users", data)
