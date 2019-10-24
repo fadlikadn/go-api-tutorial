@@ -29,3 +29,25 @@ func SetMiddlewareAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 	}
 }
+
+func SetMiddlewareAuthenticationSession(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := auth.CheckSession(r)
+		if username != "" {
+			next(w, r)
+		} else {
+			http.Redirect(w, r, "/login", 302)
+		}
+	}
+}
+
+func SetMiddlewareAuthenticationSessionOut(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := auth.CheckSession(r)
+		if username != "" {
+			http.Redirect(w, r, "/login", 302)
+		} else {
+			next(w, r)
+		}
+	}
+}

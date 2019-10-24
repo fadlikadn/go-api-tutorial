@@ -153,15 +153,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) ManageUserWeb(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-
-	} else {
-		http.Redirect(w, r,"/login", 302)
-	}
-
 	// handle parse template
-
 	usersTemplate := append(mainTemplateString, path.Join("views", "users.html"))
 	var tmpl = template.Must(template.ParseFiles(usersTemplate...))
 

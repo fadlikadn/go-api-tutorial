@@ -12,13 +12,6 @@ func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-
-	} else {
-		http.Redirect(w, r,"/login", 302)
-	}
-
 	//var filepath = path.Join("views", "index.html")
 	//var tmpl, err = template.ParseFiles(filepath)
 	//if err != nil {
@@ -54,11 +47,6 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) ActivationPending(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-		http.Redirect(w, r, "/", 302)
-	}
-
 	var filepath = path.Join("views", "activation-pending.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {
@@ -75,11 +63,6 @@ func (server *Server) ActivationPending(w http.ResponseWriter, r *http.Request) 
 }
 
 func (server *Server) LoginWeb(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-		http.Redirect(w, r, "/", 302)
-	}
-
 	var filepath = path.Join("views", "login.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {
@@ -96,11 +79,6 @@ func (server *Server) LoginWeb(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) RegisterWeb(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-		http.Redirect(w, r, "/", 302)
-	}
-
 	var filepath = path.Join("views", "register.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {
@@ -117,11 +95,6 @@ func (server *Server) RegisterWeb(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) ForgotPasswordWeb(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
-	if username != "" {
-		http.Redirect(w, r, "/", 302)
-	}
-
 	var filepath = path.Join("views", "forgot-password.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {

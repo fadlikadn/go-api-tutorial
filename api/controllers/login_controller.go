@@ -83,7 +83,8 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Using SecureCookie
-	server.setSession(user.Email, w)
+	//server.setSession(user.Email, w)
+	auth.CreateSession(user.Email, w)
 
 	responses.JSON(w, http.StatusOK, token)
 }
@@ -111,7 +112,8 @@ func (server *Server) Logout(w http.ResponseWriter, r *http.Request) {
 	session.Values["authenticated"] = false
 	_ = session.Save(r, w)*/
 	//sessionManager.Remove(r.Context(), "authenticated")
-	server.clearSession(w);
+	//server.clearSession(w)
+	auth.DeleteSession(w)
 
 	http.Redirect(w, r, base_url + "/login", 301)
 

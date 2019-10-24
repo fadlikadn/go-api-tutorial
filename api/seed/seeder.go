@@ -51,6 +51,30 @@ var posts = []models.Post {
 	},
 }
 
+var customers = []models.Customer{
+	models.Customer{
+		Name:      "Mualifin",
+		Email:     "mualifin@gmail.com",
+		Phone:     "085729801987",
+		Address:   "Manggisan Asri",
+		Notes:     "",
+	},
+	models.Customer{
+		Name:      "Nurafni Retno Kurniasih",
+		Email:     "nurafni@gmail.com",
+		Phone:     "081223564781",
+		Address:   "Kalikajar Wonosobo",
+		Notes:     "",
+	},
+	models.Customer{
+		Name:      "Sigit Sambada",
+		Email:     "sigit@gmail.com",
+		Phone:     "081225678091",
+		Address:   "Sidojoyo Wonosobo",
+		Notes:     "",
+	},
+}
+
 func MigrateOnly(db *gorm.DB) {
 	err := db.Debug().AutoMigrate(&models.User{}, &models.Post{}).Error
 	if err != nil {
@@ -88,6 +112,13 @@ func Load(db *gorm.DB) {
 		err = db.Debug().Model(&models.Post{}).Create(&posts[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed posts table: %v", err)
+		}
+	}
+
+	for j, _ := range customers {
+		err = db.Debug().Model(&models.Customer{}).Create(&customers[j]).Error
+		if err != nil {
+			log.Fatalf("cannot seed customers table: %v", err)
 		}
 	}
 }

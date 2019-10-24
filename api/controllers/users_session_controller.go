@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fadlikadn/go-api-tutorial/api/auth"
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/fadlikadn/go-api-tutorial/api/responses"
 	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
@@ -13,7 +14,7 @@ import (
 )
 
 func (server *Server) GetUsersSession(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
+	username := auth.CheckSession(r)
 	if username != "" {
 
 	} else {
@@ -30,7 +31,7 @@ func (server *Server) GetUsersSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) CreateUserSession(w http.ResponseWriter, r *http.Request) {
-	username := server.getUsername(r)
+	username := auth.CheckSession(r)
 	if username != "" {
 
 	} else {

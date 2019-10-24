@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <!-- TODO User Delete Modal -->
+    <!-- User Delete Modal -->
     <div class="modal fade" id="userDeleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete User" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -91,6 +91,68 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnUserEditCancel">Cancel</button>
                     <button type="button" class="btn btn-primary" id="btnUserEditSave">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Delete Modal -->
+    <div class="modal fade" id="customerDeleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete Customer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure want to delete this customer?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Delete" button below if you sure want to delete this customer.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="btnCustomerDelete" data-id="" href="#">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Edit Modal -->
+    <div class="modal fade" id="customerEditModal" tabindex="-1" role="dialog" aria-labelledby="Edit Customer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerEditModalLabel">Add/Edit Customer</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="customer-form">
+                        <div class="form-group">
+                            <label for="customer-name" class="col-form-label">Name</label>
+                            <input type="text" class="form-control" id="customer-name" placeholder="Fill customer name here">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email" class="col-form-label">Email</label>
+                            <input type="email" class="form-control" id="customer-email" placeholder="Fill customer email here">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone" class="col-form-label">Phone</label>
+                            <input type="text" class="form-control" id="customer-phone" placeholder="Fill customer phone here">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-address" class="col-form-label">Address</label>
+                            <input type="text" class="form-control" id="customer-address" placeholder="Fill customer Address here">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-notes" class="col-form-label">Notes</label>
+                            <textarea class="form-control" id="customer-notes" aria-multiline="true"></textarea>
+                        </div>
+                        <input type="hidden" id="customer-id" value=""/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnCustomerEditCancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnCustomerEditSave">Save</button>
                 </div>
             </div>
         </div>
