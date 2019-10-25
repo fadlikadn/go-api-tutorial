@@ -157,4 +157,106 @@
             </div>
         </div>
     </div>
+
+    <!-- Service Transaction Delete Modal -->
+    <div class="modal fade" id="serviceTransactionDeleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete Service Transaction" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Are you sure want to delete this service transaction?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Select "Delete" button below if you sure want to delete this service transactions.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="btnServiceTransactionDelete" data-id="" href="#">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Transaction Edit Modal -->
+    <div class="modal fade" id="serviceTransactionEditModal" tabindex="-1" role="dialog" aria-labelledby="Edit Service Transaction" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceTransactionEditModalLabel">Add/Edit Service Transaction</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="service-transaction-form">
+                        <div class="form-group">
+                            <label for="service-transaction-date" class="col-form-label">Service Date</label>
+                            <input type="text" class="form-control" id="service-transaction-date" placeholder="Fill service date here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-invoice-no" class="col-form-label">Invoice Number</label>
+                            <input type="text" class="form-control" id="service-transaction-invoice-no" placeholder="Fill invoice number here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-customer" class="col-form-label">Customer</label>
+                            <select class="form-control" id="service-transaction-customer">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-item-name" class="col-form-label">Item Name</label>
+                            <input type="text" class="form-control" id="service-transaction-item-name" placeholder="Fill item name here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-damage-type" class="col-form-label">Damage Type</label>
+                            <input type="text" class="form-control" id="service-transaction-damage-type" placeholder="Fill damage type here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-equipment" class="col-form-label">Equipment</label>
+                            <input type="text" class="form-control" id="service-transaction-equipment" placeholder="Fill equipment here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-description" class="col-form-label">Description</label>
+                            <input type="text" class="form-control" id="service-transaction-description" placeholder="Fill description here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-technician" class="col-form-label">Technician</label>
+                            <input type="text" class="form-control" id="service-transaction-technician" placeholder="Fill technician here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-repair-type" class="col-form-label">Repair Type</label>
+                            <input type="text" class="form-control" id="service-transaction-repair-type" placeholder="Fill repair type here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-spare-part" class="col-form-label">Spare Part</label>
+                            <input type="text" class="form-control" id="service-transaction-spare-part" placeholder="Fill spare part here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-price" class="col-form-label">Price</label>
+                            <input type="text" class="form-control" id="service-transaction-price" placeholder="Fill price here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-total-price" class="col-form-label">Total Price</label>
+                            <input type="text" class="form-control" id="service-transaction-total-price" placeholder="Fill total price here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-taken-date" class="col-form-label">Taken Date</label>
+                            <input type="text" class="form-control" id="service-transaction-taken-date" placeholder="Fill taken date here">
+                        </div>
+                        <div class="form-group">
+                            <label for="service-transaction-status" class="col-form-label">Status</label>
+                            <input type="text" class="form-control" id="service-transaction-status" placeholder="Fill service status here">
+                        </div>
+
+                        <input type="hidden" id="service-transaction-id" value=""/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnServiceTransactionEditCancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnServiceTransactionEditSave">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {{ end }}

@@ -457,7 +457,7 @@ $(function() {
                     },
                     {
                         "data": "id", render: function(data, type, row, meta) {
-                            return `<a href='#' data-target='#customerEditModal' data-toggle="modal" class='btn btn-sm btn-success customer_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#customerDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger customer_delete' data-key=${data} >Delete</a>`;
+                            return `<a href='#' data-target='#serviceTransactionEditModal' data-toggle="modal" class='btn btn-sm btn-success service-transaction_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#serviceTransactionDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger service-transaction_delete' data-key=${data} >Delete</a>`;
                         }
                     }
                 ]
@@ -469,9 +469,60 @@ $(function() {
         _handleButtonEvents: function() {
             // Service Transaction Handle Button Events
             // TODO implement button handler for service transaction management page
+            var self = this;
+            var $serviceTransactionEditModal = $('#serviceTransactionEditModal');
+            var $serviceTransactionDeleteModal = $('#serviceTransactionDeleteModal');
+
+            $serviceTransactionDeleteModal.on('show.bs.modal', function(e) {
+                if ($(e.relatedTarget).data('key') != undefined) {
+                    // Delete
+                    var serviceTransactionId = $(e.relatedTarget).data('key');
+                    console.log(serviceTransactionId);
+                    $('#btnServiceTransactionDelete').attr('data-id', serviceTransactionId);
+                }
+            });
+
+            $serviceTransactionEditModal.on('show.bs.modal', function(e) {
+                if ($(e.relatedTarget).data('key') != undefined) {
+                    // Edit
+                    var serviceTransactionId = $(e.relatedTarget).data('key');
+                    var serviceTransactionObject = $(e.relatedTarget).data('object');
+                    console.log(serviceTransactionId, serviceTransactionObject);
+                    console.log('prepare for edit');
+                    self._mapServiceTransactionModal(serviceTransactionObject);
+                    $('#btnServiceTransactionEditSave').attr('data-mode', 'edit');
+                    $('#service-transaction-id').val(serviceTransactionId);
+                } else {
+                    // ADd
+                    console.log('prepare for add');
+                    $('#btnServiceTransactionEditSave').attr('data-mode', 'add');
+                    self._mapServiceTransactionModal(null);
+                }
+            });
+
+            $serviceTransactionEditModal.on('hide.bs.modal', function(e) {
+                $('#service-transaction-form').trigger('reset');
+            });
         },
         _mapServiceTransactionModal: function(serviceTransaction) {
             // TODO implement modal for service transaction
+            if (serviceTransaction !== null) {
+                $('#serviceTransactionEditModal #service-transaction-date').val(serviceTransaction.service_date);
+                $('#serviceTransactionEditModal #service-transaction-invoice-no').val(serviceTransaction.invoice_no);
+                $('#serviceTransactionEditModal #service-transaction-customer').val(serviceTransaction.customer_id);
+                $('#serviceTransactionEditModal #service-transaction-item-name').val(serviceTransaction.item_name);
+                $('#serviceTransactionEditModal #service-transaction-damage-type').val(serviceTransaction.damage_type);
+                $('#serviceTransactionEditModal #service-transaction-equipment').val(serviceTransaction.equipment);
+                $('#serviceTransactionEditModal #service-transaction-description').val(serviceTransaction.description);
+                $('#serviceTransactionEditModal #service-transaction-technician').val(serviceTransaction.technician);
+                $('#serviceTransactionEditModal #service-transaction-repair-type').val(serviceTransaction.repair_type);
+                $('#serviceTransactionEditModal #service-transaction-price').val(serviceTransaction.price);
+                $('#serviceTransactionEditModal #service-transaction-total-price').val(serviceTransaction.total_price);
+                $('#serviceTransactionEditModal #service-transaction-taken-date').val(serviceTransaction.taken_date);
+                $('#serviceTransactionEditModal #service-transaction-status').val(serviceTransaction.status);
+            } else {
+                $('#service-transaction-form').trigger('reset');
+            }
         },
         init: function() {
             this._datatables();
