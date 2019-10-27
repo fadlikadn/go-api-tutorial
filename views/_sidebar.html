@@ -19,12 +19,24 @@
                 <span>Customers</span>
             </a>
         </li>
-        <li class="nav-item {{ if eq . "service-transaction" }} active {{ end }}">
+        <!--<li class="nav-item {{ if eq . "service-transaction" }} active {{ end }}">
             <a class="nav-link" href="/service-transactions">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Service Transactions</span>
             </a>
+        </li>-->
+        <li class="nav-item dropdown {{ if eq . "service-transaction" }} active {{ end }}">
+            <a class="nav-link dropdown-toggle" href="#" id="serviceTransactionDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Service Transactions</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="serviceTransactionDropdown">
+                <a class="dropdown-item" href="/add-service-transactions">Add New</a>
+                <a class="dropdown-item" href="/service-transactions">Data List</a>
+            </div>
         </li>
+
+
         <!--<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-fw fa-folder"></i>

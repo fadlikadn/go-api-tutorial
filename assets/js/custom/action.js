@@ -1,15 +1,16 @@
 "use strict";
 
-const base_url = 'http://localhost:8080';
-
 var Login = {};
 var Register = {};
 var Users = {};
 var Customers = {};
 var ServiceTransactions = {};
+var AddServiceTransactions = {};
 // TODO Implement JS handler for ServiceTransactions
 
 $(function() {
+
+
     Register = {
         _prepareAction: function() {
             $(document).on('click', '#btn_register_action', function(e) {
@@ -530,5 +531,143 @@ $(function() {
             this._handleButtonEvents();
         }
     };
+
+    AddServiceTransactions = {
+        customerList: null,
+        _wizardHandler: function() {
+
+            // Toolbar extra buttons
+            var btnFinish = $('<button></button>').text('Finish')
+                .addClass('btn btn-info')
+                .on('click', function(){ alert('Finish Clicked'); });
+            var btnCancel = $('<button></button>').text('Cancel')
+                .addClass('btn btn-danger')
+                .on('click', function(){ $('#smartwizard').smartWizard("reset"); });
+
+            $('#service-transaction-smartwizard').smartWizard({
+                selected: 0,
+                theme: 'arrows',
+                transitionEffect: 'fade',
+                showStepURLhash: false,
+                toolbarSettings: {
+                    // toolbarPosition: 'both',
+                    toolbarButtonPosition: 'end',
+                    // toolbarExtraButtons: [btnFinish, btnCancel]
+                },
+            });
+
+            $('#service-transaction-smartwizard').on('leaveStep', function(e, anchorObject, stepNumber, stepDirection) {
+                if (stepNumber === 0) {
+                    let customerMode = $('#customer-mode').val();
+                    console.log($('#customer-mode').val());
+                    if (stepDirection === 'forward') {
+                        if (customerMode === 'search-existing') {
+                            let selectedCustomer = $('#existing-customer :selected').val();
+                            console.log(selectedCustomer);
+                            if (selectedCustomer === '') {
+                                alert('customer belum dipilih');
+                                return false;
+                            }
+                        } else if (customerMode === 'add-new') {
+                            let customerForm = $('#customer-form');
+                            customerForm.validator('validate');
+                            var elmErr = customerForm.children('.has-error');
+                            if (elmErr && elmErr.length > 0) {
+                                alert('form belum lengkap, mohon diisi');
+                                return false;
+                            }
+                        }
+                    }
+
+                    // if (stepDirection === 'forward' && elmForm) {
+                    //     elmForm.validator('validate');
+                    //     var elmErr = elmForm.children('.has-error');
+                    //     if (elmErr && elmErr.length > 0) {
+                    //         // Form validation failed
+                    //         return false;
+                    //     }
+                    // }
+                }
+                if (stepNumber === 1) {
+
+                }
+            });
+        },
+        _select2Handler: function() {
+            $('#customer-mode').select2();
+
+            $('#existing-customer-container').removeClass('d-none');
+
+            $('#customer-mode').on('select2:select', function(e) {
+                var data = e.params.data;
+
+                if (data.id === 'add-new') {
+                    $('#new-customer-container').removeClass('d-none');
+                    $('#existing-customer-container').addClass('d-none');
+
+                    $('#customer-existing-alert').addClass('d-none');
+                    $('#customer-existing-found').empty();
+                } else if (data.id === 'search-existing') {
+                    $('#existing-customer-container').removeClass('d-none');
+                    $('#new-customer-container').addClass('d-none');
+
+                    $('#customer-form').trigger('reset');
+                }
+                console.log(data);
+            });
+        },
+        _APIs: function() {
+            var self = this;
+            $(document).on('click', '#btnCustomerRefresh', function() {
+                console.log('btnCustomRefresh clicked');
+                APIs.CustomerGetAll(function(res) {
+                    Customers.customerList = res;
+                    console.log(Customers.customerList);
+                    self._mapCustomerList(Customers.customerList);
+                });
+            });
+            $('#btnCustomerRefresh').trigger('click');
+        },
+        _mapCustomerList: function(customers) {
+            var $existingCustomer = $('#existing-customer');
+            $existingCustomer.empty();
+            $existingCustomer.append($("<option/>"));
+            $.each(customers, function(key, value) {
+                var $option = $("<option/>", {
+                    value: value.id,
+                    text: value.name,
+                    selected: false,
+                    object: JSON.stringify(value),
+                });
+                $existingCustomer.append($option);
+            });
+            $existingCustomer.select2({
+                placeholder: "Pilih Customer",
+                allowClear: true
+            });
+
+            $existingCustomer.on('select2:select', function(e) {
+                // var data = e.params.data;
+                let object = $(e.params.data.element).attr('object');
+                object = JSON.parse(object);
+                console.log(object);
+
+                // fill element customer-existing-found
+                $('#customer-existing-alert').removeClass('d-none');
+                $('#customer-existing-found').html(`Nama: ${object.name}, Email: ${object.email !== '' ? object.email : '-'}, Telepon: ${object.phone !== '' ? object.phone : '-'}`);
+
+            });
+
+            $existingCustomer.on('select2:clear', function(e) {
+                $('#customer-existing-alert').addClass('d-none');
+                $('#customer-existing-found').empty();
+            });
+        },
+        init: function() {
+            this._wizardHandler();
+            this._select2Handler();
+            this._APIs();
+        }
+    }
 });
 

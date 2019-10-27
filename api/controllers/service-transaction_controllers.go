@@ -139,6 +139,21 @@ func (server *Server) DeleteServiceTransaction(w http.ResponseWriter, r *http.Re
 	responses.JSON(w, http.StatusNoContent, "")
 }
 
+func (server *Server) AddServiceTransactionWeb(w http.ResponseWriter, r *http.Request) {
+	servicesTemplate := append(mainTemplateString, path.Join("views", "service-transactions-add.html"))
+	var tmpl = template.Must(template.ParseFiles(servicesTemplate...))
+
+	var data = M{
+		"title": baseTitle + "Add Service Transaction",
+		"sidebar": "service-transaction",
+	}
+
+	err := tmpl.ExecuteTemplate(w, "service-transactions-add", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func (server *Server) ManageServiceTransactionWeb(w http.ResponseWriter, r *http.Request) {
 	servicesTemplate := append(mainTemplateString, path.Join("views", "service-transactions.html"))
 	var tmpl = template.Must(template.ParseFiles(servicesTemplate...))

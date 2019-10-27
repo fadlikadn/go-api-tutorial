@@ -1,0 +1,208 @@
+{{ define "service-transactions-add" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ template "_header" .title }}
+</head>
+<body>
+    {{ template "_top-navbar" }}
+    <div id="wrapper">
+        {{ template "_sidebar" .sidebar }}
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+                <!-- Breadcrumbs -->
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Add Service Transactions</li>
+                </ol>
+
+                <div id="service-transaction-smartwizard">
+                    <ul>
+                        <li><a href="#step-customer">Customer<br /><small>Customer Detail</small></a></li>
+                        <li><a href="#step-service-transaction">Service Transaction<br /><small>Fill Step Transaction Detail</small></a></li>
+                    </ul>
+
+                    <div>
+                        <div id="step-customer" class="">
+                            <h3 class="border-bottom border-gray pb-2">Customer Detail</h3>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Mode</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="customer-mode">
+                                        <option value="search-existing">Search Existing</option>
+                                        <option value="add-new">Add New</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="existing-customer-container" class="d-none">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Choose Customer</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control js-states" id="existing-customer">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button class="btn btn-sm btn-info" id="btnCustomerRefresh">Refresh</button>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-success d-none" id="customer-existing-alert" role="alert">
+                                    <h5 class="alert-heading">Customer Found!</h5>
+                                    <hr>
+                                    <p class="mb-0" id="customer-existing-found">Detail found customer here</p>
+                                </div>
+                            </div>
+                            <div id="new-customer-container" class="d-none">
+                                <form action="#" role="form" data-toggle="validator" id="customer-form" class="needs-validation" novalidate>
+                                    <div class="form-group row">
+                                        <label for="customer-name" class="col-sm-2 col-form-label">Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="customer-name" placeholder="Fill customer name here" required>
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer-email" class="col-sm-2 col-form-label">Email</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="customer-email" placeholder="Fill customer email here">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer-phone" class="col-sm-2 col-form-label">Phone</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="customer-phone" placeholder="Fill customer phone here">
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer-address" class="col-sm-2 col-form-label">Address</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="customer-address" placeholder="Fill customer Address here" required>
+                                            <div class="help-block with-errors"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="customer-notes" class="col-sm-2 col-form-label">Notes</label>
+                                        <div class="col-sm-10">
+                                            <textarea class="form-control" id="customer-notes" aria-multiline="true"></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="customer-id" value=""/>
+                                    <input type="hidden" id="customer-valid" value="false"/>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="step-service-transaction" class="">
+                            <h3 class="border-bottom border-gray pb-2">New Service Transaction</h3>
+                            <div id="new-service-transaction">
+                                <form id="service-transaction-form">
+                                    <div class="form-group row">
+                                        <label for="service-transaction-date" class="col-form-label col-sm-2">Service Date</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-date" placeholder="Fill service date here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-invoice-no" class="col-form-label col-sm-2">Invoice Number</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-invoice-no" placeholder="Fill invoice number here">
+                                        </div>
+                                    </div>
+                                    <!--<div class="form-group row">
+                                        <label for="service-transaction-customer" class="col-form-label col-sm-2">Customer</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" id="service-transaction-customer">
+                                            </select>
+                                        </div>
+                                    </div>-->
+                                    <div class="form-group row">
+                                        <label for="service-transaction-item-name" class="col-form-label col-sm-2">Item Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-item-name" placeholder="Fill item name here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-damage-type" class="col-form-label col-sm-2">Damage Type</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-damage-type" placeholder="Fill damage type here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-equipment" class="col-form-label col-sm-2">Equipment</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-equipment" placeholder="Fill equipment here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-description" class="col-form-label col-sm-2">Description</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-description" placeholder="Fill description here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-technician" class="col-form-label col-sm-2">Technician</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-technician" placeholder="Fill technician here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-repair-type" class="col-form-label col-sm-2">Repair Type</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-repair-type" placeholder="Fill repair type here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-spare-part" class="col-form-label col-sm-2">Spare Part</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-spare-part" placeholder="Fill spare part here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-price" class="col-form-label col-sm-2">Price</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-price" placeholder="Fill price here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-total-price" class="col-form-label col-sm-2">Total Price</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-total-price" placeholder="Fill total price here">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="service-transaction-taken-date" class="col-form-label col-sm-2">Taken Date</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="service-transaction-taken-date" placeholder="Fill taken date here">
+                                        </div>
+                                    </div>
+                                    <!--<div class="form-group">
+                                        <label for="service-transaction-status" class="col-form-label">Status</label>
+                                        <input type="text" class="form-control" id="service-transaction-status" placeholder="Fill service status here">
+                                    </div>-->
+
+                                    <input type="hidden" id="service-transaction-id" value=""/>
+                                    <input type="hidden" id="service-transaction-valid" value="false"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ template "_js" }}
+    <script>
+        $(function() {
+            AddServiceTransactions.init();
+        });
+    </script>
+
+</body>f
+</html>
+{{ end }}
