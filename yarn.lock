@@ -2,25 +2,56 @@
 # yarn lockfile v1
 
 
+accounting@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/accounting/-/accounting-0.4.1.tgz#87dd4103eff7f4460f1e186f5c677ed6cf566883"
+  integrity sha1-h91BA+/39EYPHhhvXGd+1s9WaIM=
+
 bootstrap-validator@^0.11.9:
   version "0.11.9"
   resolved "https://registry.yarnpkg.com/bootstrap-validator/-/bootstrap-validator-0.11.9.tgz#fb7058eef53623e78f5aa7967026f98f875a9404"
   integrity sha1-+3BY7vU2I+ePWqeWcCb5j4dalAQ=
 
-bootstrap@^4.0.0, bootstrap@^4.3.1:
+bootstrap@>=4.1.2, bootstrap@^4.0.0, bootstrap@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.3.1.tgz#280ca8f610504d99d7b6b4bfc4b68cec601704ac"
   integrity sha512-rXqOmH1VilAt2DyPzluTi2blhk17bO7ef+zLLPlWvG494pDxcM234pJ8wTc/6R40UWizAIIMgxjvxZg5kmsbag==
 
-jquery@^3.3.1, jquery@^3.4.1:
+"jquery-price-format@https://github.com/flaviosilveira/Jquery-Price-Format.git":
+  version "2.2.0"
+  resolved "https://github.com/flaviosilveira/Jquery-Price-Format.git#a472489b639e1f83e9a7892e60dd9723d96e3c67"
+
+jquery@^3.0, jquery@^3.3.1, jquery@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-moment@^2.24.0:
+moment-timezone@^0.5.11:
+  version "0.5.27"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.27.tgz#73adec8139b6fe30452e78f210f27b1f346b8877"
+  integrity sha512-EIKQs7h5sAsjhPCqN6ggx6cEbs94GK050254TIJySD1bzoM5JTYDwAU1IoVOeTOL6Gm27kYJ51/uuvq1kIlrbw==
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.22.2, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
+numeral@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/numeral/-/numeral-2.0.6.tgz#4ad080936d443c2561aed9f2197efffe25f4e506"
+  integrity sha1-StCAk21EPCVhrtnyGX7//iX05QY=
+
+popper.js@^1.14.3:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.0.tgz#2e1816bcbbaa518ea6c2e15a466f4cb9c6e2fbb3"
+  integrity sha512-+G+EkOPoE5S/zChTpmBSSDYmhXJ5PsW8eMhH8cP/CQHMFPBG/kC9Y5IIw6qNYgdJ+/COf0ddY2li28iHaZRSjw==
+
+requirejs@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.6.tgz#e5093d9601c2829251258c0b9445d4d19fa9e7c9"
+  integrity sha512-ipEzlWQe6RK3jkzikgCupiTbTvm4S0/CAU5GlgptkN5SO6F3u0UD0K18wy6ErDqiCyP4J4YYe1HuAShvsxePLg==
 
 select2@^4.0.11:
   version "4.0.11"
@@ -34,3 +65,14 @@ smartwizard@^4.3.1:
   dependencies:
     bootstrap "^4.0.0"
     jquery "^3.3.1"
+
+tempusdominus-bootstrap-4@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/tempusdominus-bootstrap-4/-/tempusdominus-bootstrap-4-5.1.2.tgz#3c9906ca6e5d563faa0b81b2fdc6aa79cad9c0be"
+  integrity sha512-ksD8qc4wOJeE19wvryXmEpRzMUSZu4wSOdG6zKSn8l4ccad16249KOX1j0CccyZpuuES/n4FLqLAUB+Dd1LTBA==
+  dependencies:
+    bootstrap ">=4.1.2"
+    jquery "^3.0"
+    moment "^2.22.2"
+    moment-timezone "^0.5.11"
+    popper.js "^1.14.3"
