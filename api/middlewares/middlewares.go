@@ -45,7 +45,7 @@ func SetMiddlewareAuthenticationSessionOut(next http.HandlerFunc) http.HandlerFu
 	return func(w http.ResponseWriter, r *http.Request) {
 		username := auth.CheckSession(r)
 		if username != "" {
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/", 302)
 		} else {
 			next(w, r)
 		}
