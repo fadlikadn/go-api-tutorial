@@ -176,17 +176,10 @@ $(function() {
                     };
                 }
 
-                $.ajax({
-                    url: url,
-                    method: method,
-                    data: JSON.stringify(payload),
-                    contentType: 'application/json'
-                }).then(function(res) {
+                APIs.CustomerAddEdit(url, method, payload, function(res) {
                     console.log(res);
                     $('#table-users').DataTable().ajax.reload();
                     $('#userEditModal').modal('hide');
-                }).catch(function(err) {
-                    console.log(err);
                 });
             });
         },

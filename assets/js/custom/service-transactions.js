@@ -132,19 +132,21 @@ $(function() {
     AddServiceTransactions = {
         customerList: null,
         additionalItems: [
-            {
-                "id": '6712871827',
-                "name": "Mainboard",
-                "notes": "Ganti Keyboard merk Acer",
-                "cost": 600000,
-            }
+            // {
+            //     "id": '6712871827',
+            //     "name": "Mainboard",
+            //     "notes": "Ganti Keyboard merk Acer",
+            //     "cost": 600000,
+            // }
         ],
         additionalCostTable: null,
         additionalCostTotal: 0,
         serviceCost: 0,
         allCostTotal: 0,
+        customerDataObject: {},
+        serviceTransactionDataObject: {},
         _wizardHandler: function() {
-
+            var self = this;
             // Toolbar extra buttons
             var btnFinish = $('<button></button>').text('Finish')
                 .addClass('btn btn-info')
@@ -158,9 +160,10 @@ $(function() {
                 keyNavigation:false,
                 theme: 'arrows',
                 transitionEffect: 'fade',
+                autoAdjustHeight: false,
                 showStepURLhash: false,
                 toolbarSettings: {
-                    // toolbarPosition: 'both',
+                    toolbarPosition: 'both',
                     toolbarButtonPosition: 'end',
                     // toolbarExtraButtons: [btnFinish, btnCancel]
                 },
@@ -187,25 +190,94 @@ $(function() {
                             customerForm.validator('validate');
                             var elmErr = customerForm.children('.has-error');
                             if (elmErr && elmErr.length > 0) {
-                                alert('form belum lengkap, mohon diisi');
+                                alert('mohon lengkapi data customer');
                                 return false;
                             }
                         }
                     }
-
-                    // if (stepDirection === 'forward' && elmForm) {
-                    //     elmForm.validator('validate');
-                    //     var elmErr = elmForm.children('.has-error');
-                    //     if (elmErr && elmErr.length > 0) {
-                    //         // Form validation failed
-                    //         return false;
-                    //     }
-                    // }
                 }
                 if (stepNumber === 1) {
+                    // Validate Service Transaction Data
+                    let serviceTransactionForm = $('#service-transaction-form');
+                    serviceTransactionForm.validator('validate');
+                    var elmErr = serviceTransactionForm.children('.has-error');
+                    if (elmErr && elmErr.length > 0) {
+                        alert('mohon lengkapi data service transction');
+                        return false;
+                    }
 
+                    // Process data customer and service-transaction into object
+                    self._previewCustomer();
+                    self._previewServiceTransaction();
+                    self._previewAdditionalItem();
                 }
             });
+        },
+        _previewAdditionalItem: function() {
+            let $previewAdditionalItemList = $('#preview-additional-item-list');
+            $previewAdditionalItemList.empty();
+            $.each(AddServiceTransactions.additionalItems, function(key, value) {
+                var $li = `<li>${value.name} : ${accounting.formatMoney(value.cost, 'Rp ', 0, '.', ',')}</li>`;
+                $previewAdditionalItemList.append($li);
+            });
+        },
+        _previewServiceTransaction: function() {
+            AddServiceTransactions.serviceTransactionDataObject.date = $('#service-transaction-date').val();
+            AddServiceTransactions.serviceTransactionDataObject.invoice_no = $('#service-transaction-invoice-no').val();
+            AddServiceTransactions.serviceTransactionDataObject.item_name = $('#service-transaction-item-name').val();
+            AddServiceTransactions.serviceTransactionDataObject.damage_type = $('#service-transaction-damage-type').val();
+            AddServiceTransactions.serviceTransactionDataObject.equipment = $('#service-transaction-equipment').val();
+            AddServiceTransactions.serviceTransactionDataObject.description = $('#service-transaction-description').val();
+            AddServiceTransactions.serviceTransactionDataObject.technician = $('#service-transaction-technician').val();
+            AddServiceTransactions.serviceTransactionDataObject.repair_type = $('#service-transaction-repair-type').val();
+            AddServiceTransactions.serviceTransactionDataObject.spare_part = $('#service-transaction-spare-part').val();
+            AddServiceTransactions.serviceTransactionDataObject.price = $('#service-transaction-price').val();
+            AddServiceTransactions.serviceTransactionDataObject.total_price = accounting.unformat($('#total-cost').html(), ",");
+            AddServiceTransactions.serviceTransactionDataObject.taken_date = $('#service-transaction-taken-date').val();
+            AddServiceTransactions.serviceTransactionDataObject.status = 'New';
+
+            console.log(AddServiceTransactions.serviceTransactionDataObject);
+
+            $('#preview-service-transaction-date').html(AddServiceTransactions.serviceTransactionDataObject.date);
+            $('#preview-service-transaction-invoice-no').html(AddServiceTransactions.serviceTransactionDataObject.invoice_no);
+            $('#preview-service-transaction-item-name').html(AddServiceTransactions.serviceTransactionDataObject.item_name);
+            $('#preview-service-transaction-damage-type').html(AddServiceTransactions.serviceTransactionDataObject.damage_type);
+            $('#preview-service-transaction-equipment').html(AddServiceTransactions.serviceTransactionDataObject.equipment);
+            $('#preview-service-transaction-description').html(AddServiceTransactions.serviceTransactionDataObject.description);
+            $('#preview-service-transaction-technician').html(AddServiceTransactions.serviceTransactionDataObject.technician);
+            $('#preview-service-transaction-repair-type').html(AddServiceTransactions.serviceTransactionDataObject.repair_type);
+            $('#preview-service-transaction-spare-part').html(AddServiceTransactions.serviceTransactionDataObject.spare_part);
+            $('#preview-service-transaction-price').html(AddServiceTransactions.serviceTransactionDataObject.price);
+            $('#preview-service-transaction-taken-date').html(AddServiceTransactions.serviceTransactionDataObject.taken_date);
+            $('#preview-service-transaction-status').html(AddServiceTransactions.serviceTransactionDataObject.status);
+            $('#preview-total-cost').html(accounting.formatMoney(AddServiceTransactions.serviceTransactionDataObject.total_price, "Rp ", 0, '.', ','));
+        },
+        _previewCustomer: function() {
+            let customerExistingId = $('#customer-existing-id').val();
+            let $customerExistingObject = $('#customer-existing-object');
+            let customerExistingObject = ($customerExistingObject.val() !== '') ?  JSON.parse($customerExistingObject.val()) : null;
+            console.log(customerExistingObject);
+            if (customerExistingId !== '') {
+                AddServiceTransactions.customerDataObject = customerExistingObject;
+            } else {
+                // New Customer
+                AddServiceTransactions.customerDataObject = {};
+                AddServiceTransactions.customerDataObject.id = null;
+                AddServiceTransactions.customerDataObject.name = $('#customer-name').val();
+                AddServiceTransactions.customerDataObject.email = $('#customer-email').val();
+                AddServiceTransactions.customerDataObject.phone = $('#customer-phone').val();
+                AddServiceTransactions.customerDataObject.address = $('#customer-address').val();
+                AddServiceTransactions.customerDataObject.notes = $('#customer-notes').val();
+
+            }
+
+            console.log(AddServiceTransactions.customerDataObject);
+
+            $('#preview-customer-name').html(AddServiceTransactions.customerDataObject.name);
+            $('#preview-customer-email').html(AddServiceTransactions.customerDataObject.email);
+            $('#preview-customer-phone').html(AddServiceTransactions.customerDataObject.phone);
+            $('#preview-customer-address').html(AddServiceTransactions.customerDataObject.address);
+            $('#preview-customer-note').html(AddServiceTransactions.customerDataObject.notes);
         },
         _datepicker: function() {
             console.log('setup datepicker');
@@ -235,6 +307,8 @@ $(function() {
 
                     $('#customer-existing-alert').addClass('d-none');
                     $('#customer-existing-found').empty();
+                    $('#customer-existing-id').val('');
+                    $('#customer-existing-object').val('');
 
                     $('#existing-customer').val(null).trigger('change.select2');
                 } else if (data.id === 'search-existing') {
@@ -252,13 +326,15 @@ $(function() {
                 centsSeparator: ',',
                 thousandsSeparator: '.',
                 clearOnEmpty: true,
+                centsLimit: 0,
             });
 
             $('#additional-cost-price').priceFormat({
                 prefix: '',
                 centsSeparator: ',',
                 thousandsSeparator: '.',
-                clearOnEmpty: true
+                clearOnEmpty: true,
+                centsLimit: 0,
             });
         },
         _APIs: function() {
@@ -302,12 +378,16 @@ $(function() {
                 // fill element customer-existing-found
                 $('#customer-existing-alert').removeClass('d-none');
                 $('#customer-existing-found').html(`Nama: ${object.name}, Email: ${object.email !== '' ? object.email : '-'}, Telepon: ${object.phone !== '' ? object.phone : '-'}`);
+                $('#customer-existing-id').val(object.id);
+                $('#customer-existing-object').val(JSON.stringify(object));
 
             });
 
             $existingCustomer.on('select2:clear', function(e) {
                 $('#customer-existing-alert').addClass('d-none');
                 $('#customer-existing-found').empty();
+                $('#customer-existing-id').val('');
+                $('#customer-existing-object').val('');
             });
         },
         _datatables: function() {
@@ -340,7 +420,7 @@ $(function() {
                     },
                     {
                         "data": "cost", render: function(data, type, row, meta) {
-                            return accounting.formatMoney(data, "Rp", 0, ".", ",");
+                            return `<span class="float-right">${accounting.formatMoney(data, "Rp", 0, ".", ",")}</span>`;
                         }
                     },
                     {
@@ -418,6 +498,16 @@ $(function() {
                 AddServiceTransactions.serviceCost = accounting.unformat($(this).val(), ',');
                 self._calculateAllCostTotal();
             });
+
+            $(document).on('click', '#btnProcessTransactionAction', function(e) {
+                e.preventDefault();
+                console.log('process transaction');
+
+                // hit to API
+
+
+                $('#confirmationProcessModal').modal
+            })
         },
         _modalHandler: function() {
             var self = this;
@@ -443,7 +533,7 @@ $(function() {
             if (additionalCost !== null) {
                 $('#additional-cost-form #additional-cost-name').val(additionalCost.name);
                 $('#additional-cost-form #additional-cost-note').val(additionalCost.notes);
-                $('#additional-cost-form #additional-cost-price').val(accounting.formatMoney(additionalCost.cost, '', 2, '.', ','));
+                $('#additional-cost-form #additional-cost-price').val(accounting.formatMoney(additionalCost.cost, '', 0, '.', ','));
             } else {
                 $('#additional-cost-form').trigger('reset');
             }
