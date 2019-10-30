@@ -69,6 +69,7 @@ func (s *Server) initializeRoutes() {
 	// Service Transaction routes
 	s.Router.HandleFunc("/api/service-transactions", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.GetServiceTransactions))).Methods("GET")
 	s.Router.HandleFunc("/api/service-transactions", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.CreateServiceTransaction))).Methods("POST")
+	s.Router.HandleFunc("/api/service-transactions-complex", middlewares.SetMiddlewareJSON(s.CreateComplexServiceTransaction)).Methods("POST")
 	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.GetServiceTransaction))).Methods("GET")
 	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.UpdateServiceTransaction))).Methods("PUT")
 	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.DeleteServiceTransaction))).Methods("DELETE")

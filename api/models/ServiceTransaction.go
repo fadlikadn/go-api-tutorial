@@ -1,9 +1,12 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/jinzhu/gorm"
+	"github.com/metakeule/fmtdate"
 	"html"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -143,4 +146,85 @@ func (s *ServiceTransaction) DeleteServiceTransaction(db *gorm.DB, uid uint32) (
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func (s *ServiceTransaction) UnmarshalJSON(j []byte, customer int) error {
+	var rawStrings map[string]string
+	
+	err := json.Unmarshal(j, &rawStrings)
+	if err != nil {
+		return err
+	}
+
+	if customer != 0 {
+		s.CustomerID = uint32(customer)
+	}
+
+	for k, v := range rawStrings {
+		if strings.ToLower(k) == "service_date" {
+			sd, err := fmtdate.Parse("DD/MM/YYYY", v)
+			if err != nil {
+				return err
+			}
+			s.ServiceDate = sd
+		}
+
+		if strings.ToLower(k) == "invoice_no" {
+			s.InvoiceNo = v
+		}
+
+		if strings.ToLower(k) == "item_name" {
+			s.ItemName = v
+		}
+
+		if strings.ToLower(k) == "damage_type" {
+			s.DamageType = v
+		}
+
+		if strings.ToLower(k) == "equipment" {
+			s.Equipment = v
+		}
+
+		if strings.ToLower(k) == "description" {
+			s.Description = v
+		}
+
+		if strings.ToLower(k) == "technician" {
+			s.Technician = v
+		}
+
+		if strings.ToLower(k) == "repair_type" {
+			s.RepairType = v
+		}
+
+		if strings.ToLower(k) == "spare_part" {
+			s.SparePart = v
+		}
+
+		if strings.ToLower(k) == "price" {
+			s.Price, _ = strconv.ParseUint(v, 10, 64)
+		}
+
+		if strings.ToLower(k) == "total_price" {
+			s.TotalPrice, _ = strconv.ParseUint(v, 10, 64)
+		}
+
+		if strings.ToLower(k) == "invoice_no" {
+			s.InvoiceNo = v
+		}
+
+		if strings.ToLower(k) == "taken_date" {
+			td, err := fmtdate.Parse("DD/MM/YYYY", v)
+			if err != nil {
+				return err
+			}
+			s.TakenDate = td
+		}
+
+		if strings.ToLower(k) == "status" {
+			s.Status = v
+		}
+	}
+
+	return nil
 }

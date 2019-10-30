@@ -8,6 +8,7 @@ import (
 	"github.com/fadlikadn/go-api-tutorial/api/responses"
 	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
 	"github.com/gorilla/mux"
+	"github.com/tidwall/gjson"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -42,6 +43,97 @@ func (server *Server) CreateServiceTransaction(w http.ResponseWriter, r *http.Re
 	}
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionCreated.ID))
 	responses.JSON(w, http.StatusCreated, serviceTransactionCreated)
+}
+
+func (server *Server) ActionCreateNewCustomer(customerValue gjson.Result) (*models.Customer, error) {
+	customer := models.Customer{}
+	err := json.Unmarshal([]byte(customerValue.String()), &customer)
+	if err != nil {
+		return nil, err
+	}
+
+	customer.Prepare()
+	err = customer.Validate("")
+	if err != nil {
+		return nil, err
+	}
+	customerCreated, err := customer.SaveCustomer(server.DB)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(customerCreated)
+	return customerCreated, nil
+}
+
+func (server *Server) ActionCreateNewTransaction(serviceTransactionValue gjson.Result, customerId int) (*models.ServiceTransaction, error) {
+	serviceTransaction := models.ServiceTransaction{}
+	err := serviceTransaction.UnmarshalJSON([]byte(serviceTransactionValue.String()), customerId)
+	if err != nil {
+		fmt.Println("error again")
+		fmt.Println(err)
+	}
+
+	fmt.Println("data service transaction")
+	fmt.Println(serviceTransaction)
+
+	serviceTransaction.Prepare()
+	err = serviceTransaction.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	serviceTransactionCreated, err := serviceTransaction.SaveServiceTransaction(server.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	return serviceTransactionCreated, nil
+}
+
+func (server *Server) CreateComplexServiceTransaction(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	customerValue := gjson.Get(string(body), "customer")
+	serviceTransactionValue := gjson.Get(string(body), "serviceTransaction")
+
+	fmt.Println(gjson.Get(customerValue.String(), "id"))
+	fmt.Println(gjson.Get(customerValue.String(), "id").Type)
+	if gjson.Get(customerValue.String(), "id").Type != gjson.Null {
+		// existing customer
+		customerInt := int(gjson.Get(customerValue.String(), "id").Int())
+		serviceTransactionCreated, err := server.ActionCreateNewTransaction(serviceTransactionValue, customerInt)
+		if err != nil {
+			formattedError := formateerror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		}
+
+		w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionCreated.ID))
+		responses.JSON(w, http.StatusCreated, serviceTransactionCreated)
+	} else {
+		// create new customer
+		fmt.Println("create new customer first")
+
+		customerCreated, err := server.ActionCreateNewCustomer(customerValue)
+		if err != nil {
+			formattedError := formateerror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		}
+
+		customerInt := int(customerCreated.ID)
+		serviceTransactionCreated, err := server.ActionCreateNewTransaction(serviceTransactionValue, customerInt)
+		if err != nil {
+			formattedError := formateerror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		}
+
+		w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionCreated.ID))
+		responses.JSON(w, http.StatusCreated, serviceTransactionCreated)
+	}
 }
 
 func (server *Server) GetServiceTransactions(w http.ResponseWriter, r *http.Request) {

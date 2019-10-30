@@ -24,7 +24,25 @@ $(function() {
             });
         },
         StoreNewServiceTransaction: function(customer, service, additionalItem, callback) {
+            let url = base_url + "/api/service-transactions-complex";
+            console.log(customer);
+            console.log(service);
+            console.log(additionalItem);
 
+            var payload = {
+                customer: customer,
+                serviceTransaction: service,
+                additionalItems: additionalItem,
+            };
+            console.log(payload);
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: JSON.stringify(payload),
+                contentType: 'application/json',
+                success: callback
+            });
         },
         init: function() {
 

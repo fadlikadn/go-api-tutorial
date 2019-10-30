@@ -222,7 +222,7 @@ $(function() {
             });
         },
         _previewServiceTransaction: function() {
-            AddServiceTransactions.serviceTransactionDataObject.date = $('#service-transaction-date').val();
+            AddServiceTransactions.serviceTransactionDataObject.service_date = $('#service-transaction-date').val();
             AddServiceTransactions.serviceTransactionDataObject.invoice_no = $('#service-transaction-invoice-no').val();
             AddServiceTransactions.serviceTransactionDataObject.item_name = $('#service-transaction-item-name').val();
             AddServiceTransactions.serviceTransactionDataObject.damage_type = $('#service-transaction-damage-type').val();
@@ -231,14 +231,14 @@ $(function() {
             AddServiceTransactions.serviceTransactionDataObject.technician = $('#service-transaction-technician').val();
             AddServiceTransactions.serviceTransactionDataObject.repair_type = $('#service-transaction-repair-type').val();
             AddServiceTransactions.serviceTransactionDataObject.spare_part = $('#service-transaction-spare-part').val();
-            AddServiceTransactions.serviceTransactionDataObject.price = $('#service-transaction-price').val();
+            AddServiceTransactions.serviceTransactionDataObject.price = accounting.unformat($('#service-transaction-price').val(), '.');
             AddServiceTransactions.serviceTransactionDataObject.total_price = accounting.unformat($('#total-cost').html(), ",");
             AddServiceTransactions.serviceTransactionDataObject.taken_date = $('#service-transaction-taken-date').val();
             AddServiceTransactions.serviceTransactionDataObject.status = 'New';
 
             console.log(AddServiceTransactions.serviceTransactionDataObject);
 
-            $('#preview-service-transaction-date').html(AddServiceTransactions.serviceTransactionDataObject.date);
+            $('#preview-service-transaction-date').html(AddServiceTransactions.serviceTransactionDataObject.service_date);
             $('#preview-service-transaction-invoice-no').html(AddServiceTransactions.serviceTransactionDataObject.invoice_no);
             $('#preview-service-transaction-item-name').html(AddServiceTransactions.serviceTransactionDataObject.item_name);
             $('#preview-service-transaction-damage-type').html(AddServiceTransactions.serviceTransactionDataObject.damage_type);
@@ -503,10 +503,31 @@ $(function() {
                 e.preventDefault();
                 console.log('process transaction');
 
-                // hit to API
+                AddServiceTransactions.serviceTransactionDataObject.equipment = AddServiceTransactions.serviceTransactionDataObject.equipment.join(',');
+                AddServiceTransactions.serviceTransactionDataObject.price = AddServiceTransactions.serviceTransactionDataObject.price.toString();
+                AddServiceTransactions.serviceTransactionDataObject.total_price = AddServiceTransactions.serviceTransactionDataObject.total_price.toString();
+
+                APIs.StoreNewServiceTransaction(
+                    AddServiceTransactions.customerDataObject,
+                    AddServiceTransactions.serviceTransactionDataObject,
+                    AddServiceTransactions.additionalItems, function(res) {
+                        console.log(res);
+                        $('#confirmationProcessModal').modal('hide');
+                        // TODO implement cetak nota/kwitansi (printable / PDF)
+                        window.location.replace(base_url + "/service-transactions");
+                    });
+
+                /*// hit to API
+                var payload = {
+                    customer: AddServiceTransactions.customerDataObject,
+                    serviceTransaction: AddServiceTransactions.serviceTransactionDataObject,
+                    additionalItems: AddServiceTransactions.additionalItems,
+                };
+
+                console.log(payload);
+                console.log(JSON.stringify(payload));*/
 
 
-                $('#confirmationProcessModal').modal
             })
         },
         _modalHandler: function() {
