@@ -114,11 +114,11 @@ func MigrateOnly(db *gorm.DB) {
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().DropTableIfExists(&models.Post{}, &models.ServiceTransaction{}, &models.User{}, &models.Session{}, &models.Customer{}).Error
+	err := db.Debug().DropTableIfExists(&models.Post{}, &models.AdditionalItem{}, &models.ServiceTransaction{}, &models.User{}, &models.Session{}, &models.Customer{}).Error
 	if err != nil {
 		log.Fatalf("cannot drop table: %v", err)
 	}
-	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}, &models.Customer{}, &models.ServiceTransaction{}).Error
+	err = db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Session{}, &models.Customer{}, &models.ServiceTransaction{}, &models.AdditionalItem{}).Error
 	if err != nil {
 		log.Fatalf("cannot migrate table: %v", err)
 	}
@@ -133,6 +133,12 @@ func Load(db *gorm.DB) {
 	err = db.Debug().Model(&models.ServiceTransaction{}).AddForeignKey("customer_id", "customers(id)", "cascade", "cascade").Error
 	if err != nil {
 		log.Fatalf("attaching foreign key error: %v", err)
+	}
+
+	// Additional Item Foreign Key
+	err = db.Debug().Model(&models.AdditionalItem{}).AddForeignKey("st_id", "service_transactions(id)", "cascade", "cascade").Error
+	if err != nil {
+		log.Fatalf("attaching foreign key additional error :%v", err)
 	}
 
 	for i, _ := range users {

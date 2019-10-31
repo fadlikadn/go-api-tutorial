@@ -44,6 +44,27 @@ $(function() {
                 success: callback
             });
         },
+        ServiceTransactionUpdate: function(payload, id, callback) {
+            let url = base_url + "/api/service-transactions-complex/" + id;
+
+            $.ajax({
+                url: url,
+                method: 'PUT',
+                data: JSON.stringify(payload),
+                contentType: 'application/json',
+                success: callback
+            });
+        },
+        ServiceTransactionDelete: function(id, callback) {
+            let url = base_url + "/api/service-transactions/" + id;
+
+            $.ajax({
+                url: url,
+                method: 'DELETE',
+                contentType: 'application/json',
+                success: callback,
+            });
+        },
         init: function() {
 
         }

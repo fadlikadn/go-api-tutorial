@@ -181,7 +181,7 @@
 
     <!-- Service Transaction Edit Modal -->
     <div class="modal fade" id="serviceTransactionEditModal" tabindex="-1" role="dialog" aria-labelledby="Edit Service Transaction" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="serviceTransactionEditModalLabel">Add/Edit Service Transaction</h5>
@@ -191,66 +191,125 @@
                 </div>
                 <div class="modal-body">
                     <form id="service-transaction-form">
-                        <div class="form-group">
-                            <label for="service-transaction-date" class="col-form-label">Service Date</label>
-                            <input type="text" class="form-control" id="service-transaction-date" placeholder="Fill service date here">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="service-transaction-date" class="col-form-label">Service Date</label>
+                                    <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#service-transaction-date" id="service-transaction-date" placeholder="Fill service date here" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-invoice-no" class="col-form-label">Invoice Number</label>
+                                    <input type="text" class="form-control" id="service-transaction-invoice-no" placeholder="Fill invoice number here" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-customer" class="col-form-label">Customer</label>
+                                    <select class="form-control select2 js-states" id="service-transaction-customer" style="width: 100%;">
+                                        <option></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-item-name" class="col-form-label">Item Name</label>
+                                    <input type="text" class="form-control" id="service-transaction-item-name" placeholder="Fill item name here" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-damage-type" class="col-form-label">Damage Type</label>
+                                    <input type="text" class="form-control" id="service-transaction-damage-type" placeholder="Isikan jenis kerusakan. Contoh : mati" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-equipment" class="col-form-label">Equipment</label>
+                                    <!--<input type="text" class="form-control" id="service-transaction-equipment" placeholder="Fill equipment here">-->
+                                    <select class="form-control select2" id="service-transaction-equipment" name="service-transaction-equipment[]" multiple="multiple" style="width: 100%">
+                                        <option value="tas-softcase">Tas / Softcase</option>
+                                        <option value="charger">Charger</option>
+                                        <option value="kardus">Kardus</option>
+                                        <option value="kabel-power">Kabel Power</option>
+                                        <option value="kabel-data">Kabel Data</option>
+                                        <option value="kartu-garansi">Kartu Garansi</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="service-transaction-description" class="col-form-label">Description</label>
+                                    <input type="text" class="form-control" id="service-transaction-description" placeholder="Keterangan service. Contoh : Garansi 1 bulan">
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-technician" class="col-form-label">Technician</label>
+                                    <input type="text" class="form-control" id="service-transaction-technician" placeholder="Teknisi yang akan menangani">
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-repair-type" class="col-form-label">Repair Type</label>
+                                    <input type="text" class="form-control" id="service-transaction-repair-type" placeholder="Jenis service yang dilakukan. Contoh : Service mainboard, kendala di chipset dan power management">
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-spare-part" class="col-form-label">Spare Part</label>
+                                    <input type="text" class="form-control" id="service-transaction-spare-part" placeholder="Spare part yang dibutuhkan. Contoh : mainboard baru, ganti RAM, dll">
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-taken-date" class="col-form-label">Taken Date</label>
+                                    <input type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#service-transaction-taken-date" id="service-transaction-taken-date" placeholder="Perkiraan tanggal pengambilan" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-transaction-price" class="col-form-label">Cost (Rp)</label>
+                                    <input type="text" class="form-control" id="service-transaction-price" placeholder="Service Cost">
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="service-transaction-invoice-no" class="col-form-label">Invoice Number</label>
-                            <input type="text" class="form-control" id="service-transaction-invoice-no" placeholder="Fill invoice number here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-customer" class="col-form-label">Customer</label>
-                            <select class="form-control" id="service-transaction-customer">
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-item-name" class="col-form-label">Item Name</label>
-                            <input type="text" class="form-control" id="service-transaction-item-name" placeholder="Fill item name here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-damage-type" class="col-form-label">Damage Type</label>
-                            <input type="text" class="form-control" id="service-transaction-damage-type" placeholder="Fill damage type here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-equipment" class="col-form-label">Equipment</label>
-                            <input type="text" class="form-control" id="service-transaction-equipment" placeholder="Fill equipment here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-description" class="col-form-label">Description</label>
-                            <input type="text" class="form-control" id="service-transaction-description" placeholder="Fill description here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-technician" class="col-form-label">Technician</label>
-                            <input type="text" class="form-control" id="service-transaction-technician" placeholder="Fill technician here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-repair-type" class="col-form-label">Repair Type</label>
-                            <input type="text" class="form-control" id="service-transaction-repair-type" placeholder="Fill repair type here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-spare-part" class="col-form-label">Spare Part</label>
-                            <input type="text" class="form-control" id="service-transaction-spare-part" placeholder="Fill spare part here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-price" class="col-form-label">Price</label>
-                            <input type="text" class="form-control" id="service-transaction-price" placeholder="Fill price here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-total-price" class="col-form-label">Total Price</label>
-                            <input type="text" class="form-control" id="service-transaction-total-price" placeholder="Fill total price here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-taken-date" class="col-form-label">Taken Date</label>
-                            <input type="text" class="form-control" id="service-transaction-taken-date" placeholder="Fill taken date here">
-                        </div>
-                        <div class="form-group">
-                            <label for="service-transaction-status" class="col-form-label">Status</label>
-                            <input type="text" class="form-control" id="service-transaction-status" placeholder="Fill service status here">
+                        <div class="row border-top border-gray">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="service-transaction-status" class="col-form-label">Status</label>
+                                    <!--<input type="text" class="form-control" id="service-transaction-status" placeholder="Fill service status here">-->
+                                    <select class="form-control select2" id="service-transaction-status" style="width: 100%">
+                                        <option value="new">New</option>
+                                        <option value="in-progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="service-transaction-total-price" class="col-form-label"><strong><h4>Total Cost (Rp)</h4></strong></label>
+                                    <input type="text" class="form-control" id="service-transaction-total-price" placeholder="Total cost during service" readonly>
+                                </div>
+                            </div>
                         </div>
 
                         <input type="hidden" id="service-transaction-id" value=""/>
                     </form>
+
+                    <!-- Additional Item Table -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6>Additional Item Cost (Spare Part, Component, etc)</h6>
+                            <span class="float-right">
+                                <a href="#" data-target="#additionalCostModal" data-toggle="modal" class="btn-sm btn-primary" id="btn_add_additional_cost">Add Additional Cost</a>
+                            </span>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="table-additional-cost-modal" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Notes</th>
+                                        <th>Cost</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-additional-cost-body">
+                                    <tr>
+                                        <td>Mainboard</td>
+                                        <td>Ganti Keyboard merk Toshiba</td>
+                                        <td>Rp 50.000</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnServiceTransactionEditCancel">Cancel</button>
@@ -259,4 +318,83 @@
             </div>
         </div>
     </div>
+
+    <!-- Additional Cost Modal -->
+    <div class="modal fade" id="additionalCostModal" tabindex="-1" role="dialog" aria-labelledby="Additional Cost" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="additionalCostModalLabel">Add/Edit Additional Cost</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="additional-cost-form">
+                        <div class="form-group">
+                            <label for="additional-cost-name" class="col-form-label">Name</label>
+                            <input type="text" class="form-control" id="additional-cost-name" placeholder="Item Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="additional-cost-note" class="col-form-label">Notes</label>
+                            <input type="text" class="form-control" id="additional-cost-note" placeholder="Notes">
+                        </div>
+                        <div class="form-group">
+                            <label for="additional-cost-price" class="col-form-label">Price (Rp)</label>
+                            <input type="text" class="form-control" id="additional-cost-price" placeholder="Price">
+                        </div>
+                        <input type="hidden" id="additional-cost-id" value=""/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnAdditionalCostCancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnAdditionalCostSave">Save</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Additional Cost Delete Modal -->
+    <div class="modal fade" id="additionalCostDeleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete Additional Cost" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Are you sure want to delete this additional cost?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Select "Delete" button below if you sure want to delete this additional cost.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="btnAdditionalCostDelete" data-id="" href="#">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Process Modal -->
+    <div class="modal fade" id="confirmationProcessModal" tabindex="-1" role="dialog" aria-labelledby="Proses Transaksi" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Apakah yakin akan menindaklanjuti proses ini?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" id="btnProcessTransactionAction" data-id="" href="#">Process</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {{ end }}

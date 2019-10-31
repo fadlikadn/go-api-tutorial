@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/metakeule/fmtdate"
 	"html"
@@ -28,6 +29,7 @@ type ServiceTransaction struct {
 	TotalPrice	uint64		`json:"total_price"` // Total Harga
 	TakenDate	time.Time	`json:"taken_date"` // Tanggal Pengambilan
 	Status		string		`json:"status"` // Status Perbaikan TODO normalize to table service_status
+	AdditionalItems	[]AdditionalItem	`gorm:"foreignkey:STId" json:"additional_items"`
 }
 
 func (s *ServiceTransaction) Prepare() {
@@ -85,6 +87,14 @@ func (s *ServiceTransaction) FindAllServiceTransactions(db *gorm.DB) (*[]Service
 			if err != nil {
 				return &[]ServiceTransaction{}, err
 			}
+
+			// Additional Item list
+			err = db.Debug().Model(&AdditionalItem{}).Where("st_id = ?", serviceTransactions[i].ID).Find(&serviceTransactions[i].AdditionalItems).Error
+			if err != nil {
+				fmt.Println("error during get additional items query")
+				fmt.Println(err)
+				return &[]ServiceTransaction{}, err
+			}
 		}
 	}
 	return &serviceTransactions, nil
@@ -102,11 +112,21 @@ func (s *ServiceTransaction) FindServiceTransactionByID(db *gorm.DB, pid uint32)
 			return &ServiceTransaction{}, err
 		}
 	}
+
+	// Additional Item list
+	err = db.Debug().Model(&AdditionalItem{}).Where("st_id = ?", s.ID).Find(&s.AdditionalItems).Error
+	if err != nil {
+		fmt.Println("error during get additional items query")
+		fmt.Println(err)
+		return &ServiceTransaction{}, err
+	}
+
 	return s, nil
 }
 
 func (s *ServiceTransaction) UpdateServiceTransaction(db *gorm.DB, pid uint32) (*ServiceTransaction, error) {
 	var err error
+	fmt.Println(pid)
 	db = db.Debug().Model(&ServiceTransaction{}).Where("id = ?", pid).Take(&ServiceTransaction{}).UpdateColumns(
 			map[string]interface{} {
 				"service_date": s.ServiceDate,
@@ -127,14 +147,17 @@ func (s *ServiceTransaction) UpdateServiceTransaction(db *gorm.DB, pid uint32) (
 	)
 	err = db.Debug().Model(&ServiceTransaction{}).Where("id = ?", pid).Take(&s).Error
 	if err != nil {
+		fmt.Println("error when get service transaction update")
+		fmt.Println(err)
 		return &ServiceTransaction{}, err
 	}
-	if s.ID != 0 {
-		err = db.Debug().Model(&ServiceTransaction{}).Where("id = ?", s.CustomerID).Take(&s.Customer).Error
-		if err != nil {
-			return &ServiceTransaction{}, err
-		}
-	}
+	//if s.ID != 0 {
+	//	err = db.Debug().Model(&Customer{}).Where("id = ?", s.CustomerID).Take(&s.Customer).Error
+	//	if err != nil {
+	//		fmt.Println("error when get customer")
+	//		return &ServiceTransaction{}, err
+	//	}
+	//}
 
 	return s, nil
 }

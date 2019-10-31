@@ -2,7 +2,14 @@
 
 $(function() {
     ServiceTransactions = {
+        customers: null,
+        additionalItemsTableData: [],
+        additionalCostTotal: 0,
+        serviceCost: 0,
+        allCostTotal: 0,
+        selectedServiceTransactionData: {},
         _datatables: function() {
+            var self = this;
             $('#table-service-transactions').DataTable({
                 "processing": true,
                 "searching": true,
@@ -24,7 +31,8 @@ $(function() {
                     {
                         "data": "service_date", render: function(data, type, row, meta) {
                             // TODO parse date and time using MomentJS
-                            return data;
+                            return moment(data).format('DD/MM/YYYY');
+                            // return data;
                         }
                     },
                     {
@@ -44,11 +52,13 @@ $(function() {
                     {
                         "data": "repair_type", "defaultContent": ""
                     },
+                    // {
+                    //     "data": "price", "defaultContent": ""
+                    // },
                     {
-                        "data": "price", "defaultContent": ""
-                    },
-                    {
-                        "data": "total_price", "defaultContent": ""
+                        "data": "total_price", render: function(data, type, row, meta) {
+                            return `<span class="float-right">${accounting.formatMoney(data, "Rp ", 0, ".", ",")}</span>`;
+                        }
                     },
                     {
                         "data": "status", "defaultContent": ""
@@ -60,9 +70,92 @@ $(function() {
                     }
                 ]
             });
+
+            $('#table-additional-cost-modal')
+                .on('preXhr.dt', function(e, settings, data) {
+                    console.log('reset additionalCostTotal before table load new data');
+
+                    ServiceTransactions.additionalCostTotal = 0;
+                    ServiceTransactions.allCostTotal = 0;
+                    ServiceTransactions.allCostTotal += ServiceTransactions.serviceCost;
+                    self._calculateAllCostTotal();
+                })
+                .DataTable({
+                "processing": true,
+                "searching": true,
+                "serverSide": false,
+                "paging": true,
+                "bLengthChange": true,
+                "ordering": true,
+                "ajax": function(data, callback, settings) {
+                    callback({
+                        data: (ServiceTransactions.additionalItemsTableData.length > 0) ? ServiceTransactions.additionalItemsTableData : [],
+                    })
+                },
+                "columns": [
+                    {
+                        "data": "name", "defaultContent": ""
+                    },
+                    {
+                        "data": "notes", "defaultContent": ""
+                    },
+                    {
+                        "data": "cost", render: function(data, type, row, meta) {
+                            return `<span class="float-right">${accounting.formatMoney(data, "Rp", 0, ".", ",")}</span>`;
+                        }
+                    },
+                    {
+                        "data": "id", render: function(data, type, row, meta) {
+                            return `<a href='#' data-target='#additionalCostModal' data-toggle="modal" class='btn btn-sm btn-success additional-cost_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#additionalCostDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger additional-cost_delete' data-key=${data} >Delete</a>`;
+                        }
+                    }
+                ],
+                "rowCallback": function(row, data, index) {
+                    ServiceTransactions.additionalCostTotal += parseInt(data.cost);
+                    console.log(ServiceTransactions.additionalCostTotal);
+                    self._calculateAllCostTotal();
+                }
+            });
+        },
+        _calculateAllCostTotal: function() {
+            ServiceTransactions.allCostTotal = ServiceTransactions.serviceCost + ServiceTransactions.additionalCostTotal;
+            $('#serviceTransactionEditModal #service-transaction-total-price').val(accounting.formatMoney(ServiceTransactions.allCostTotal, "", 0, ".", ","));
         },
         _APIs: function() {
+            APIs.CustomerGetAll(function(res) {
+                ServiceTransactions.customers = res;
+                console.log(ServiceTransactions.customers);
+            })
+        },
+        _datepicker: function() {
+            console.log('set datepicker');
+            $('#serviceTransactionEditModal #service-transaction-date').datetimepicker({
+                format: 'DD/MM/YYYY',
+            });
 
+            $('#serviceTransactionEditModal #service-transaction-taken-date').datetimepicker({
+                format: 'DD/MM/YYYY',
+            });
+        },
+        _mapSelectedCustomer: function(customers, selectedCustomer) {
+            var $serviceTransactionCustomer = $('#serviceTransactionEditModal #service-transaction-customer');
+            $serviceTransactionCustomer.empty();
+            $serviceTransactionCustomer.append($("<option/>"));
+            $.each(customers, function(key, value) {
+                let selected = false;
+                if (value.id === selectedCustomer) selected = true;
+                let $option = $("<option/>", {
+                    value: value.id,
+                    text: value.name,
+                    selected: selected,
+                    object: JSON.stringify(value)
+                });
+                $serviceTransactionCustomer.append($option);
+            });
+            $serviceTransactionCustomer.select2({
+                placeholder: "Select Customer",
+                allowClear: true
+            });
         },
         _handleButtonEvents: function() {
             // Service Transaction Handle Button Events
@@ -85,9 +178,11 @@ $(function() {
                     // Edit
                     var serviceTransactionId = $(e.relatedTarget).data('key');
                     var serviceTransactionObject = $(e.relatedTarget).data('object');
-                    console.log(serviceTransactionId, serviceTransactionObject);
-                    console.log('prepare for edit');
+                    ServiceTransactions.selectedServiceTransactionData = serviceTransactionObject;
+                    // console.log(serviceTransactionId, serviceTransactionObject);
+                    // console.log('prepare for edit');
                     self._mapServiceTransactionModal(serviceTransactionObject);
+                    self._mapAdditionalCostTableModal(serviceTransactionObject);
                     $('#btnServiceTransactionEditSave').attr('data-mode', 'edit');
                     $('#service-transaction-id').val(serviceTransactionId);
                 } else {
@@ -101,227 +196,176 @@ $(function() {
             $serviceTransactionEditModal.on('hide.bs.modal', function(e) {
                 $('#service-transaction-form').trigger('reset');
             });
+
+            $(document).on('keyup', '#serviceTransactionEditModal #service-transaction-price', function(e) {
+                e.preventDefault();
+                ServiceTransactions.serviceCost = accounting.unformat($(this).val(), ',');
+                self._calculateAllCostTotal();
+            });
+
+            $(document).on('click', '#btnServiceTransactionDelete', function(e) {
+                e.preventDefault();
+                console.log($('#btnServiceTransactionDelete').attr('data-id'));
+                let url = base_url + '/api/service-transactions/' + $('#btnServiceTransactionDelete').attr('data-id');
+
+                APIs.ServiceTransactionDelete($('#btnServiceTransactionDelete').attr('data-id'), function(res) {
+                    console.log(res);
+                    $('#table-service-transactions').DataTable().ajax.reload();
+                    $('#serviceTransactionDeleteModal').modal('hide');
+                });
+            });
+
+            $(document).on('click', '#btnServiceTransactionEditSave', function(e) {
+                e.preventDefault();
+
+                console.log('prepare payload for edit data');
+
+                // Update selectedServiceTransactionData
+                ServiceTransactions.selectedServiceTransactionData.service_date = $('#service-transaction-date').val();
+                ServiceTransactions.selectedServiceTransactionData.invoice_no = $('#service-transaction-invoice-no').val();
+                ServiceTransactions.selectedServiceTransactionData.item_name = $('#service-transaction-item-name').val();
+                ServiceTransactions.selectedServiceTransactionData.damage_type = $('#service-transaction-damage-type').val();
+                ServiceTransactions.selectedServiceTransactionData.equipment = $('#service-transaction-equipment').val().join(',');
+                ServiceTransactions.selectedServiceTransactionData.description = $('#service-transaction-description').val();
+                ServiceTransactions.selectedServiceTransactionData.technician = $('#service-transaction-technician').val();
+                ServiceTransactions.selectedServiceTransactionData.repair_type = $('#service-transaction-repair-type').val();
+                ServiceTransactions.selectedServiceTransactionData.spare_part = $('#service-transaction-spare-part').val();
+                ServiceTransactions.selectedServiceTransactionData.price = accounting.unformat($('#service-transaction-price').val(), ',').toString();
+                ServiceTransactions.selectedServiceTransactionData.total_price = accounting.unformat($('#service-transaction-total-price').val(), ",").toString();
+                ServiceTransactions.selectedServiceTransactionData.taken_date = $('#service-transaction-taken-date').val();
+                ServiceTransactions.selectedServiceTransactionData.status = $('#service-transaction-status').val();
+                ServiceTransactions.selectedServiceTransactionData.id = ServiceTransactions.selectedServiceTransactionData.id.toString();
+                // ServiceTransactions.selectedServiceTransactionData.customer_id = ServiceTransactions.selectedServiceTransactionData.customer_id.toString();
+                ServiceTransactions.selectedServiceTransactionData.customer_id = $('#service-transaction-customer').val().toString();
+
+                delete ServiceTransactions.selectedServiceTransactionData.customer;
+                delete ServiceTransactions.selectedServiceTransactionData.additional_items;
+
+                var payload = {
+                    serviceTransaction: ServiceTransactions.selectedServiceTransactionData,
+                    additionalItems: ServiceTransactions.additionalItemsTableData,
+                };
+
+                $.each(payload.additionalItems, function(key, value) {
+                    console.log(key);
+                    payload.additionalItems[key].id = payload.additionalItems[key].id.toString();
+                    payload.additionalItems[key].cost = payload.additionalItems[key].cost.toString();
+                    payload.additionalItems[key].st_id = payload.additionalItems[key].st_id.toString();
+                });
+                console.log(payload);
+                console.log(JSON.stringify(payload));
+
+                APIs.ServiceTransactionUpdate(payload, ServiceTransactions.selectedServiceTransactionData.id, function(res) {
+                    $('#table-service-transactions').DataTable().ajax.reload();
+                    $('#serviceTransactionEditModal').modal('hide');
+                });
+            });
+
+            $(document).on('click', '#btnAdditionalCostSave', function(e) {
+                e.preventDefault();
+
+                let mode = $('#btnAdditionalCostSave').attr('data-mode');
+                if (mode === 'add') {
+                    // add
+                    let newAdditionalCost = {
+                        "id": uniqueID(),
+                        "name": $('#additional-cost-name').val(),
+                        "notes": $('#additional-cost-note').val(),
+                        "cost": accounting.unformat($('#additional-cost-price').val(),
+                            ",").toString(),
+                        "st_id": $('#service-transaction-id').val(),
+                    };
+                    console.log(newAdditionalCost);
+                    ServiceTransactions.additionalItemsTableData.push(newAdditionalCost);
+                    console.log(ServiceTransactions.additionalItemsTableData);
+                } else {
+                    // edit
+                    let key = $('#additional-cost-id').val();
+                    let existingIndex = ServiceTransactions.additionalItemsTableData.findIndex(({id}) => id === key);
+                    console.log(key, existingIndex);
+                    let updatedAdditionalCost = {
+                        "id": key,
+                        "name": $('#additional-cost-name').val(),
+                        "notes": $('#additional-cost-note').val(),
+                        "cost": accounting.unformat($('#additional-cost-price').val(), ",").toString(),
+                        "st_id": $('#service-transaction-id').val(),
+                    };
+                    ServiceTransactions.additionalItemsTableData[existingIndex] = updatedAdditionalCost;
+                    console.log(ServiceTransactions.additionalItemsTableData);
+                }
+                $('#table-additional-cost-modal').DataTable().ajax.reload();
+                $('#additional-cost-form').trigger('reset');
+            });
+
+            $(document).on('click', '#btnAdditionalCostDelete', function(e) {
+                e.preventDefault();
+                let key = $('#btnAdditionalCostDelete').attr('data-key');
+                ServiceTransactions.additionalItemsTableData.splice(ServiceTransactions.additionalItemsTableData.findIndex(({id}) => id === key.toString()), 1);
+                $('#table-additional-cost-modal').DataTable().ajax.reload();
+                $('#additionalCostDeleteModal').modal('hide');
+            });
         },
-        _mapServiceTransactionModal: function(serviceTransaction) {
-            // TODO implement modal for service transaction
+        _mapAdditionalCostTableModal: function(serviceTransaction) {
+            var self = this;
+            console.log(serviceTransaction);
+
             if (serviceTransaction !== null) {
-                $('#serviceTransactionEditModal #service-transaction-date').val(serviceTransaction.service_date);
+                console.log(serviceTransaction.additional_items);
+                if (serviceTransaction.additional_items.length > 0) {
+                    console.log('more than 0');
+
+                    ServiceTransactions.additionalItemsTableData = [...serviceTransaction.additional_items];
+                    $.each(ServiceTransactions.additionalItemsTableData, function(key, value) {
+                       ServiceTransactions.additionalItemsTableData[key].id = ServiceTransactions.additionalItemsTableData[key].id.toString();
+                    });
+                    console.log(ServiceTransactions.additionalItemsTableData);
+                } else {
+                    ServiceTransactions.additionalItemsTableData = [];
+                }
+                $('#table-additional-cost-modal').DataTable().ajax.reload();
+            }
+        },
+
+        _mapServiceTransactionModal: function(serviceTransaction) {
+            var self = this;
+            // TODO implement modal for service transaction
+            console.log(serviceTransaction);
+            if (serviceTransaction !== null) {
+                // $('#serviceTransactionEditModal #service-transaction-date').val(serviceTransaction.service_date);
+                $('#serviceTransactionEditModal #service-transaction-date').val(moment(serviceTransaction.service_date).format('DD/MM/YYYY'));
                 $('#serviceTransactionEditModal #service-transaction-invoice-no').val(serviceTransaction.invoice_no);
-                $('#serviceTransactionEditModal #service-transaction-customer').val(serviceTransaction.customer_id);
+                // $('#serviceTransactionEditModal #service-transaction-customer').val(serviceTransaction.customer_id);
                 $('#serviceTransactionEditModal #service-transaction-item-name').val(serviceTransaction.item_name);
                 $('#serviceTransactionEditModal #service-transaction-damage-type').val(serviceTransaction.damage_type);
-                $('#serviceTransactionEditModal #service-transaction-equipment').val(serviceTransaction.equipment);
+                $('#serviceTransactionEditModal #service-transaction-equipment').val(serviceTransaction.equipment.split(',')).trigger('change');
                 $('#serviceTransactionEditModal #service-transaction-description').val(serviceTransaction.description);
                 $('#serviceTransactionEditModal #service-transaction-technician').val(serviceTransaction.technician);
                 $('#serviceTransactionEditModal #service-transaction-repair-type').val(serviceTransaction.repair_type);
+                $('#serviceTransactionEditModal #service-transaction-spare-part').val(serviceTransaction.spare_part);
                 $('#serviceTransactionEditModal #service-transaction-price').val(serviceTransaction.price);
                 $('#serviceTransactionEditModal #service-transaction-total-price').val(serviceTransaction.total_price);
-                $('#serviceTransactionEditModal #service-transaction-taken-date').val(serviceTransaction.taken_date);
-                $('#serviceTransactionEditModal #service-transaction-status').val(serviceTransaction.status);
+                $('#serviceTransactionEditModal #service-transaction-taken-date').val(moment(serviceTransaction.taken_date).format('DD/MM/YYYY'));
+                $('#serviceTransactionEditModal #service-transaction-status').val(serviceTransaction.status).trigger('change');
+
+                ServiceTransactions.serviceCost = accounting.unformat($('#serviceTransactionEditModal #service-transaction-price').val(), ',');
+                self._calculateAllCostTotal();
+                self._mapSelectedCustomer(ServiceTransactions.customers, serviceTransaction.customer_id);
             } else {
                 $('#service-transaction-form').trigger('reset');
             }
-        },
-        init: function() {
-            this._datatables();
-            this._APIs();
-            this._handleButtonEvents();
-        }
-    };
-
-    AddServiceTransactions = {
-        customerList: null,
-        additionalItems: [
-            // {
-            //     "id": '6712871827',
-            //     "name": "Mainboard",
-            //     "notes": "Ganti Keyboard merk Acer",
-            //     "cost": 600000,
-            // }
-        ],
-        additionalCostTable: null,
-        additionalCostTotal: 0,
-        serviceCost: 0,
-        allCostTotal: 0,
-        customerDataObject: {},
-        serviceTransactionDataObject: {},
-        _wizardHandler: function() {
-            var self = this;
-            // Toolbar extra buttons
-            var btnFinish = $('<button></button>').text('Finish')
-                .addClass('btn btn-info')
-                .on('click', function(){ alert('Finish Clicked'); });
-            var btnCancel = $('<button></button>').text('Cancel')
-                .addClass('btn btn-danger')
-                .on('click', function(){ $('#smartwizard').smartWizard("reset"); });
-
-            $('#service-transaction-smartwizard').smartWizard({
-                selected: 0,
-                keyNavigation:false,
-                theme: 'arrows',
-                transitionEffect: 'fade',
-                autoAdjustHeight: false,
-                showStepURLhash: false,
-                toolbarSettings: {
-                    toolbarPosition: 'both',
-                    toolbarButtonPosition: 'end',
-                    // toolbarExtraButtons: [btnFinish, btnCancel]
-                },
-                lang: {
-                    next: 'Lanjut',
-                    previous: 'Kembali',
-                }
-            });
-
-            $('#service-transaction-smartwizard').on('leaveStep', function(e, anchorObject, stepNumber, stepDirection) {
-                if (stepNumber === 0) {
-                    let customerMode = $('#customer-mode').val();
-                    console.log($('#customer-mode').val());
-                    if (stepDirection === 'forward') {
-                        if (customerMode === 'search-existing') {
-                            let selectedCustomer = $('#existing-customer :selected').val();
-                            console.log(selectedCustomer);
-                            if (selectedCustomer === '') {
-                                alert('customer belum dipilih');
-                                return false;
-                            }
-                        } else if (customerMode === 'add-new') {
-                            let customerForm = $('#customer-form');
-                            customerForm.validator('validate');
-                            var elmErr = customerForm.children('.has-error');
-                            if (elmErr && elmErr.length > 0) {
-                                alert('mohon lengkapi data customer');
-                                return false;
-                            }
-                        }
-                    }
-                }
-                if (stepNumber === 1) {
-                    // Validate Service Transaction Data
-                    let serviceTransactionForm = $('#service-transaction-form');
-                    serviceTransactionForm.validator('validate');
-                    var elmErr = serviceTransactionForm.children('.has-error');
-                    if (elmErr && elmErr.length > 0) {
-                        alert('mohon lengkapi data service transction');
-                        return false;
-                    }
-
-                    // Process data customer and service-transaction into object
-                    self._previewCustomer();
-                    self._previewServiceTransaction();
-                    self._previewAdditionalItem();
-                }
-            });
-        },
-        _previewAdditionalItem: function() {
-            let $previewAdditionalItemList = $('#preview-additional-item-list');
-            $previewAdditionalItemList.empty();
-            $.each(AddServiceTransactions.additionalItems, function(key, value) {
-                var $li = `<li>${value.name} : ${accounting.formatMoney(value.cost, 'Rp ', 0, '.', ',')}</li>`;
-                $previewAdditionalItemList.append($li);
-            });
-        },
-        _previewServiceTransaction: function() {
-            AddServiceTransactions.serviceTransactionDataObject.service_date = $('#service-transaction-date').val();
-            AddServiceTransactions.serviceTransactionDataObject.invoice_no = $('#service-transaction-invoice-no').val();
-            AddServiceTransactions.serviceTransactionDataObject.item_name = $('#service-transaction-item-name').val();
-            AddServiceTransactions.serviceTransactionDataObject.damage_type = $('#service-transaction-damage-type').val();
-            AddServiceTransactions.serviceTransactionDataObject.equipment = $('#service-transaction-equipment').val();
-            AddServiceTransactions.serviceTransactionDataObject.description = $('#service-transaction-description').val();
-            AddServiceTransactions.serviceTransactionDataObject.technician = $('#service-transaction-technician').val();
-            AddServiceTransactions.serviceTransactionDataObject.repair_type = $('#service-transaction-repair-type').val();
-            AddServiceTransactions.serviceTransactionDataObject.spare_part = $('#service-transaction-spare-part').val();
-            AddServiceTransactions.serviceTransactionDataObject.price = accounting.unformat($('#service-transaction-price').val(), '.');
-            AddServiceTransactions.serviceTransactionDataObject.total_price = accounting.unformat($('#total-cost').html(), ",");
-            AddServiceTransactions.serviceTransactionDataObject.taken_date = $('#service-transaction-taken-date').val();
-            AddServiceTransactions.serviceTransactionDataObject.status = 'New';
-
-            console.log(AddServiceTransactions.serviceTransactionDataObject);
-
-            $('#preview-service-transaction-date').html(AddServiceTransactions.serviceTransactionDataObject.service_date);
-            $('#preview-service-transaction-invoice-no').html(AddServiceTransactions.serviceTransactionDataObject.invoice_no);
-            $('#preview-service-transaction-item-name').html(AddServiceTransactions.serviceTransactionDataObject.item_name);
-            $('#preview-service-transaction-damage-type').html(AddServiceTransactions.serviceTransactionDataObject.damage_type);
-            $('#preview-service-transaction-equipment').html(AddServiceTransactions.serviceTransactionDataObject.equipment);
-            $('#preview-service-transaction-description').html(AddServiceTransactions.serviceTransactionDataObject.description);
-            $('#preview-service-transaction-technician').html(AddServiceTransactions.serviceTransactionDataObject.technician);
-            $('#preview-service-transaction-repair-type').html(AddServiceTransactions.serviceTransactionDataObject.repair_type);
-            $('#preview-service-transaction-spare-part').html(AddServiceTransactions.serviceTransactionDataObject.spare_part);
-            $('#preview-service-transaction-price').html(AddServiceTransactions.serviceTransactionDataObject.price);
-            $('#preview-service-transaction-taken-date').html(AddServiceTransactions.serviceTransactionDataObject.taken_date);
-            $('#preview-service-transaction-status').html(AddServiceTransactions.serviceTransactionDataObject.status);
-            $('#preview-total-cost').html(accounting.formatMoney(AddServiceTransactions.serviceTransactionDataObject.total_price, "Rp ", 0, '.', ','));
-        },
-        _previewCustomer: function() {
-            let customerExistingId = $('#customer-existing-id').val();
-            let $customerExistingObject = $('#customer-existing-object');
-            let customerExistingObject = ($customerExistingObject.val() !== '') ?  JSON.parse($customerExistingObject.val()) : null;
-            console.log(customerExistingObject);
-            if (customerExistingId !== '') {
-                AddServiceTransactions.customerDataObject = customerExistingObject;
-            } else {
-                // New Customer
-                AddServiceTransactions.customerDataObject = {};
-                AddServiceTransactions.customerDataObject.id = null;
-                AddServiceTransactions.customerDataObject.name = $('#customer-name').val();
-                AddServiceTransactions.customerDataObject.email = $('#customer-email').val();
-                AddServiceTransactions.customerDataObject.phone = $('#customer-phone').val();
-                AddServiceTransactions.customerDataObject.address = $('#customer-address').val();
-                AddServiceTransactions.customerDataObject.notes = $('#customer-notes').val();
-
-            }
-
-            console.log(AddServiceTransactions.customerDataObject);
-
-            $('#preview-customer-name').html(AddServiceTransactions.customerDataObject.name);
-            $('#preview-customer-email').html(AddServiceTransactions.customerDataObject.email);
-            $('#preview-customer-phone').html(AddServiceTransactions.customerDataObject.phone);
-            $('#preview-customer-address').html(AddServiceTransactions.customerDataObject.address);
-            $('#preview-customer-note').html(AddServiceTransactions.customerDataObject.notes);
-        },
-        _datepicker: function() {
-            console.log('setup datepicker');
-            $('#service-transaction-date').datetimepicker({
-                format: 'DD/MM/YYYY',
-            });
-
-            $('#service-transaction-taken-date').datetimepicker({
-                format: 'DD/MM/YYYY'
-            });
-        },
-        _select2Handler: function() {
-            $('#customer-mode').select2();
-
-            $('#service-transaction-equipment').select2({
-                tags: true,
-            });
-
-            $('#existing-customer-container').removeClass('d-none');
-
-            $('#customer-mode').on('select2:select', function(e) {
-                var data = e.params.data;
-
-                if (data.id === 'add-new') {
-                    $('#new-customer-container').removeClass('d-none');
-                    $('#existing-customer-container').addClass('d-none');
-
-                    $('#customer-existing-alert').addClass('d-none');
-                    $('#customer-existing-found').empty();
-                    $('#customer-existing-id').val('');
-                    $('#customer-existing-object').val('');
-
-                    $('#existing-customer').val(null).trigger('change.select2');
-                } else if (data.id === 'search-existing') {
-                    $('#existing-customer-container').removeClass('d-none');
-                    $('#new-customer-container').addClass('d-none');
-
-                    $('#customer-form').trigger('reset');
-                }
-                console.log(data);
-            });
+            this._currencyHandler();
         },
         _currencyHandler: function() {
-            $('#service-transaction-price').priceFormat({
+            console.log('format currency on total price input');
+            $('#serviceTransactionEditModal #service-transaction-price').priceFormat({
+                prefix: '',
+                centsSeparator: ',',
+                thousandsSeparator: '.',
+                clearOnEmpty: true,
+                centsLimit: 0,
+            });
+
+            $('#serviceTransactionEditModal #service-transaction-total-price').priceFormat({
                 prefix: '',
                 centsSeparator: ',',
                 thousandsSeparator: '.',
@@ -337,236 +381,22 @@ $(function() {
                 centsLimit: 0,
             });
         },
-        _APIs: function() {
-            var self = this;
-            $(document).on('click', '#btnCustomerRefresh', function() {
-                console.log('btnCustomRefresh clicked');
-                APIs.CustomerGetAll(function(res) {
-                    Customers.customerList = res;
-                    console.log(Customers.customerList);
-                    self._mapCustomerList(Customers.customerList);
+        _select2Handler: function() {
+            $('#serviceTransactionEditModal #service-transaction-status').select2();
 
-                    $('#customer-existing-alert').addClass('d-none');
-                });
+            $('#serviceTransactionEditModal #service-transaction-equipment').select2({
+                tags: true,
             });
-            $('#btnCustomerRefresh').trigger('click');
-        },
-        _mapCustomerList: function(customers) {
-            var $existingCustomer = $('#existing-customer');
-            $existingCustomer.empty();
-            $existingCustomer.append($("<option/>"));
-            $.each(customers, function(key, value) {
-                var $option = $("<option/>", {
-                    value: value.id,
-                    text: value.name,
-                    selected: false,
-                    object: JSON.stringify(value),
-                });
-                $existingCustomer.append($option);
-            });
-            $existingCustomer.select2({
-                placeholder: "Select Customer",
-                allowClear: true
-            });
-
-            $existingCustomer.on('select2:select', function(e) {
-                // var data = e.params.data;
-                let object = $(e.params.data.element).attr('object');
-                object = JSON.parse(object);
-                console.log(object);
-
-                // fill element customer-existing-found
-                $('#customer-existing-alert').removeClass('d-none');
-                $('#customer-existing-found').html(`Nama: ${object.name}, Email: ${object.email !== '' ? object.email : '-'}, Telepon: ${object.phone !== '' ? object.phone : '-'}`);
-                $('#customer-existing-id').val(object.id);
-                $('#customer-existing-object').val(JSON.stringify(object));
-
-            });
-
-            $existingCustomer.on('select2:clear', function(e) {
-                $('#customer-existing-alert').addClass('d-none');
-                $('#customer-existing-found').empty();
-                $('#customer-existing-id').val('');
-                $('#customer-existing-object').val('');
-            });
-        },
-        _datatables: function() {
-            var self = this;
-            AddServiceTransactions.additionalCostTable =  $('#table-additional-cost').on('preXhr.dt', function(e, settings, data) {
-                console.log('reset additionalCostTotal before table load new data');
-
-                AddServiceTransactions.additionalCostTotal = 0;
-                AddServiceTransactions.allCostTotal = 0;
-                AddServiceTransactions.allCostTotal += AddServiceTransactions.serviceCost;
-                self._calculateAllCostTotal();
-            })
-                .DataTable({
-                "processing": true,
-                "searching": true,
-                "serverSide": false,
-                "paging": true,
-                "bLengthChange": true,
-                "ordering": true,
-                // "data": AddServiceTransactions.additionalItems,
-                "ajax": function(data, callback, settings) {
-                    callback({ data: AddServiceTransactions.additionalItems})
-                },
-                "columns": [
-                    {
-                        "data": "name", "defaultContent": ""
-                    },
-                    {
-                        "data": "notes", "defaultContent": ""
-                    },
-                    {
-                        "data": "cost", render: function(data, type, row, meta) {
-                            return `<span class="float-right">${accounting.formatMoney(data, "Rp", 0, ".", ",")}</span>`;
-                        }
-                    },
-                    {
-                        "data": "id", render: function(data, type, row, meta) {
-                            return `<a href='#' data-target='#additionalCostModal' data-toggle="modal" class='btn btn-sm btn-success additional-cost_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#additionalCostDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger additional-cost_delete' data-key=${data} >Delete</a>`;
-                        }
-                    }
-                ],
-                // "preInit": function() {
-                //     AddServiceTransactions.additionalCostTotal = 0;
-                // },
-                "rowCallback": function(row, data, index) {
-                    AddServiceTransactions.additionalCostTotal += data.cost;
-                    console.log(AddServiceTransactions.additionalCostTotal);
-                    self._calculateAllCostTotal();
-                },
-            });
-        },
-        _calculateAllCostTotal: function() {
-            AddServiceTransactions.allCostTotal = AddServiceTransactions.serviceCost + AddServiceTransactions.additionalCostTotal;
-            $('#total-cost').html(accounting.formatMoney(AddServiceTransactions.allCostTotal, "Rp", 0, ".", ","));
-        },
-        _buttonsHandler: function() {
-            var self = this;
-            $(document).on('click', '#btnAdditionalCostSave', function(e) {
-                e.preventDefault();
-
-                let mode = $('#btnAdditionalCostSave').attr('data-mode');
-                if (mode === 'add') {
-                    // add
-                    // Store new Additional Item
-                    let newAdditionalCost = {
-                        "id": uniqueID(),
-                        "name": $('#additional-cost-name').val(),
-                        "notes": $('#additional-cost-note').val(),
-                        "cost": accounting.unformat($('#additional-cost-price').val(), ","),
-                    };
-                    console.log(newAdditionalCost);
-                    AddServiceTransactions.additionalItems.push(newAdditionalCost);
-                    console.log(AddServiceTransactions.additionalItems);
-                    $('#table-additional-cost').DataTable().ajax.reload();
-                    $('#additional-cost-form').trigger('reset');
-                } else {
-                    // edit
-                    let key = $('#additional-cost-id').val();
-                    let existingIndex = AddServiceTransactions.additionalItems.findIndex(({id}) => id === key);
-                    console.log(key, existingIndex);
-                    let updatedAdditionalCost = {
-                        "id": key,
-                        "name": $('#additional-cost-name').val(),
-                        "notes": $('#additional-cost-note').val(),
-                        "cost": accounting.unformat($('#additional-cost-price').val(), ","),
-                    };
-                    AddServiceTransactions.additionalItems[existingIndex] = updatedAdditionalCost;
-                    console.log(AddServiceTransactions.additionalItems[existingIndex]);
-                    console.log(AddServiceTransactions.additionalItems);
-                    $('#table-additional-cost').DataTable().ajax.reload();
-                    $('#additional-cost-form').trigger('reset');
-                }
-
-            });
-
-            $(document).on('click', '#btnAdditionalCostDelete', function(e) {
-                e.preventDefault();
-                console.log($('#btnAdditionalCostDelete').attr('data-key'));
-                var key = $('#btnAdditionalCostDelete').attr('data-key');
-                AddServiceTransactions.additionalItems.splice(AddServiceTransactions.additionalItems.findIndex(({id}) => id === key), 1);
-                $('#table-additional-cost').DataTable().ajax.reload();
-                $('#additionalCostDeleteModal').modal('hide');
-            });
-
-            $(document).on('keyup', '#service-transaction-price', function(e) {
-                e.preventDefault();
-                console.log(accounting.unformat($(this).val(), ','));
-                AddServiceTransactions.serviceCost = accounting.unformat($(this).val(), ',');
-                self._calculateAllCostTotal();
-            });
-
-            $(document).on('click', '#btnProcessTransactionAction', function(e) {
-                e.preventDefault();
-                console.log('process transaction');
-
-                AddServiceTransactions.serviceTransactionDataObject.equipment = AddServiceTransactions.serviceTransactionDataObject.equipment.join(',');
-                AddServiceTransactions.serviceTransactionDataObject.price = AddServiceTransactions.serviceTransactionDataObject.price.toString();
-                AddServiceTransactions.serviceTransactionDataObject.total_price = AddServiceTransactions.serviceTransactionDataObject.total_price.toString();
-
-                APIs.StoreNewServiceTransaction(
-                    AddServiceTransactions.customerDataObject,
-                    AddServiceTransactions.serviceTransactionDataObject,
-                    AddServiceTransactions.additionalItems, function(res) {
-                        console.log(res);
-                        $('#confirmationProcessModal').modal('hide');
-                        // TODO implement cetak nota/kwitansi (printable / PDF)
-                        window.location.replace(base_url + "/service-transactions");
-                    });
-
-                /*// hit to API
-                var payload = {
-                    customer: AddServiceTransactions.customerDataObject,
-                    serviceTransaction: AddServiceTransactions.serviceTransactionDataObject,
-                    additionalItems: AddServiceTransactions.additionalItems,
-                };
-
-                console.log(payload);
-                console.log(JSON.stringify(payload));*/
-
-
-            })
         },
         _modalHandler: function() {
-            var self = this;
-            var $additionalCostModal = $('#additionalCostModal');
-
-            $additionalCostModal.on('show.bs.modal', function(e) {
-                if ($(e.relatedTarget).data('key') !== undefined) {
-                    // Edit
-                    let additionalCostId = $(e.relatedTarget).data('key');
-                    let additionalCostObject = $(e.relatedTarget).data('object');
-                    console.log(additionalCostId, additionalCostObject);
-                    $('#btnAdditionalCostSave').attr('data-mode', 'edit');
-                    $('#additional-cost-id').val(additionalCostId);
-                    self._mapAdditionalCostModal(additionalCostObject);
-                } else {
-                    // Add
-                    $('#btnAdditionalCostSave').attr('data-mode', 'add');
-                    self._mapAdditionalCostModal(null);
-                }
-            });
-        },
-        _mapAdditionalCostModal: function(additionalCost) {
-            if (additionalCost !== null) {
-                $('#additional-cost-form #additional-cost-name').val(additionalCost.name);
-                $('#additional-cost-form #additional-cost-note').val(additionalCost.notes);
-                $('#additional-cost-form #additional-cost-price').val(accounting.formatMoney(additionalCost.cost, '', 0, '.', ','));
-            } else {
-                $('#additional-cost-form').trigger('reset');
-            }
+            AddServiceTransactions._modalHandler();
         },
         init: function() {
-            this._wizardHandler();
-            this._select2Handler();
-            this._APIs();
-            this._datepicker();
-            this._currencyHandler();
             this._datatables();
-            this._buttonsHandler();
+            this._APIs();
+            this._handleButtonEvents();
+            this._datepicker();
+            this._select2Handler();
             this._modalHandler();
         }
     };

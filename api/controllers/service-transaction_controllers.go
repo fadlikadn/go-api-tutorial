@@ -45,6 +45,30 @@ func (server *Server) CreateServiceTransaction(w http.ResponseWriter, r *http.Re
 	responses.JSON(w, http.StatusCreated, serviceTransactionCreated)
 }
 
+func (server *Server) ActionCreateNewAdditionalItem(additionalItemValue gjson.Result, serviceTransactionId int) (*models.AdditionalItem, error) {
+	fmt.Println(additionalItemValue)
+	additionalItem := models.AdditionalItem{}
+	err := additionalItem.UnmarshalJSON([]byte(additionalItemValue.String()), serviceTransactionId)
+	if err != nil {
+		fmt.Println("error on unmarshal json additional item")
+		fmt.Println(err)
+	}
+
+	fmt.Println(additionalItem)
+
+	additionalItem.Prepare()
+	err = additionalItem.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	additionalItemCreated, err := additionalItem.SaveAdditionalItem(server.DB)
+	if err != nil {
+		return nil, err
+	}
+	return additionalItemCreated, nil
+}
+
 func (server *Server) ActionCreateNewCustomer(customerValue gjson.Result) (*models.Customer, error) {
 	customer := models.Customer{}
 	err := json.Unmarshal([]byte(customerValue.String()), &customer)
@@ -63,7 +87,7 @@ func (server *Server) ActionCreateNewCustomer(customerValue gjson.Result) (*mode
 		return nil, err
 	}
 
-	fmt.Println(customerCreated)
+	//fmt.Println(customerCreated)
 	return customerCreated, nil
 }
 
@@ -76,7 +100,7 @@ func (server *Server) ActionCreateNewTransaction(serviceTransactionValue gjson.R
 	}
 
 	fmt.Println("data service transaction")
-	fmt.Println(serviceTransaction)
+	//fmt.Println(serviceTransaction)
 
 	serviceTransaction.Prepare()
 	err = serviceTransaction.Validate()
@@ -100,13 +124,28 @@ func (server *Server) CreateComplexServiceTransaction(w http.ResponseWriter, r *
 	}
 	customerValue := gjson.Get(string(body), "customer")
 	serviceTransactionValue := gjson.Get(string(body), "serviceTransaction")
+	additionalItemsValue := gjson.Get(string(body), "additionalItems")
+	fmt.Println(additionalItemsValue)
 
-	fmt.Println(gjson.Get(customerValue.String(), "id"))
-	fmt.Println(gjson.Get(customerValue.String(), "id").Type)
+	//fmt.Println(gjson.Get(customerValue.String(), "id"))
+	//fmt.Println(gjson.Get(customerValue.String(), "id").Type)
 	if gjson.Get(customerValue.String(), "id").Type != gjson.Null {
 		// existing customer
 		customerInt := int(gjson.Get(customerValue.String(), "id").Int())
 		serviceTransactionCreated, err := server.ActionCreateNewTransaction(serviceTransactionValue, customerInt)
+		if err != nil {
+			formattedError := formateerror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		}
+
+		additionalItemCreated := &models.AdditionalItem{}
+		additionalItemsValue.ForEach(func(key, value gjson.Result) bool {
+			additionalItemCreated, err = server.ActionCreateNewAdditionalItem(value, int(serviceTransactionCreated.ID))
+			return true
+		})
+
+		serviceTransaction := models.ServiceTransaction{}
+		serviceTransactionCreated, err = serviceTransaction.FindServiceTransactionByID(server.DB, serviceTransactionCreated.ID)
 		if err != nil {
 			formattedError := formateerror.FormatError(err.Error())
 			responses.ERROR(w, http.StatusInternalServerError, formattedError)
@@ -131,9 +170,103 @@ func (server *Server) CreateComplexServiceTransaction(w http.ResponseWriter, r *
 			responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		}
 
+		additionalItemCreated := &models.AdditionalItem{}
+		additionalItemsValue.ForEach(func(key, value gjson.Result) bool {
+			additionalItemCreated, err = server.ActionCreateNewAdditionalItem(value, int(serviceTransactionCreated.ID))
+			return true
+		})
+
+		serviceTransaction := models.ServiceTransaction{}
+		serviceTransactionCreated, err = serviceTransaction.FindServiceTransactionByID(server.DB, serviceTransactionCreated.ID)
+		if err != nil {
+			formattedError := formateerror.FormatError(err.Error())
+			responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		}
+
 		w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionCreated.ID))
 		responses.JSON(w, http.StatusCreated, serviceTransactionCreated)
 	}
+}
+
+func (server *Server) ActionUpdateTransaction(serviceTransactionValue gjson.Result, customerId int, pid int) (*models.ServiceTransaction, error) {
+	serviceTransaction := models.ServiceTransaction{}
+	err := serviceTransaction.UnmarshalJSON([]byte(serviceTransactionValue.String()), customerId)
+	if err != nil {
+		fmt.Println("error again")
+		fmt.Println(err)
+	}
+
+	serviceTransaction.Prepare()
+	err = serviceTransaction.Validate()
+	if err != nil {
+		fmt.Println("error on validate")
+		return nil, err
+	}
+
+	updatedServiceTransaction, err := serviceTransaction.UpdateServiceTransaction(server.DB, uint32(pid))
+	if err != nil {
+		fmt.Println("error on update service transaction")
+		return nil, err
+	}
+
+	return updatedServiceTransaction, nil
+}
+
+func (server *Server) UpdateComplexServiceTransaction(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Check if the service transaction exist
+	serviceTransaction := models.ServiceTransaction{}
+	err = server.DB.Debug().Model(models.ServiceTransaction{}).Where("id = ?", pid).Take(&serviceTransaction).Error
+	if err != nil {
+		responses.ERROR(w, http.StatusNotFound, errors.New("Service Transaction not found"))
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	serviceTransactionValue := gjson.Get(string(body), "serviceTransaction")
+	additionalItemsValue := gjson.Get(string(body), "additionalItems")
+	fmt.Println(additionalItemsValue)
+
+	customerId := int(gjson.Get(serviceTransactionValue.String(), "customer_id").Int())
+	serviceTransactionUpdated, err := server.ActionUpdateTransaction(serviceTransactionValue, customerId, int(pid))
+	if err != nil {
+		formattedError := formateerror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+	}
+
+	// Delete existing additional item
+	additionaltem := models.AdditionalItem{}
+	_, err = additionaltem.DeleteAllAdditionalItemBySTid(server.DB, serviceTransactionUpdated.ID)
+	//if deletedAdditionalItems == 0{
+	//	formattedError := formateerror.FormatError(err.Error())
+	//	responses.ERROR(w, http.StatusInternalServerError, formattedError)
+	//}
+
+	additionalItemCreated := &models.AdditionalItem{}
+	additionalItemsValue.ForEach(func(key, value gjson.Result) bool {
+		additionalItemCreated, err = server.ActionCreateNewAdditionalItem(value, int(serviceTransactionUpdated.ID))
+		return true
+	})
+
+	serviceTransactionUpdated, err = serviceTransaction.FindServiceTransactionByID(server.DB, serviceTransactionUpdated.ID)
+	if err != nil {
+		formattedError := formateerror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+	}
+
+	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionUpdated.ID))
+	responses.JSON(w, http.StatusCreated, serviceTransactionUpdated)
 }
 
 func (server *Server) GetServiceTransactions(w http.ResponseWriter, r *http.Request) {
