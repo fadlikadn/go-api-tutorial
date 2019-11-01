@@ -75,6 +75,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.UpdateServiceTransaction))).Methods("PUT")
 	s.Router.HandleFunc("/api/service-transactions/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.DeleteServiceTransaction))).Methods("DELETE")
 	s.Router.HandleFunc("/api/service-transactions/sendstatusemail/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthenticationSession(s.SendTransactionStatusEmail))).Methods("GET")
+	s.Router.HandleFunc("/api/invoice/service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.CreateInvoiceServiceTransaction)).Methods("GET")
 	// Posts routes
 	s.Router.HandleFunc("/api/posts", middlewares.SetMiddlewareJSON(s.CreatePost)).Methods("POST")
 	s.Router.HandleFunc("/api/posts", middlewares.SetMiddlewareJSON(s.GetPosts)).Methods("GET")

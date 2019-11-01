@@ -301,6 +301,8 @@ $(function() {
                 e.preventDefault();
 
                 console.log('create invoice');
+                let url = base_url + "/api/invoice/service-transactions";
+                window.open(url, '_blank');
             });
 
             $(document).on('click', '#btnAdditionalCostSave', function(e) {

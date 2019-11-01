@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/metakeule/fmtdate"
 	uuid "github.com/satori/go.uuid"
+	"github.com/unidoc/unipdf/v3/creator"
 	"html"
 	"strconv"
 	"strings"
@@ -260,3 +261,67 @@ func (s *ServiceTransaction) UnmarshalJSON(j []byte, customer int) error {
 }
 
 // TODO Implement Create Invoice for Service Transaction
+func (s *ServiceTransaction) CreateInvoice(c *creator.Creator, logoPath string) (*creator.Invoice, error) {
+	// Create an instance of Logo used as a header for the invoice
+	// If the image is not stored locally, you can use NewImageFromData to generate it byte array
+	/*logo, err := c.NewImageFromData([]byte("Logo Company"))
+	if err != nil {
+		return nil, err
+	}*/
+
+	// Create a new invoice
+	invoice := c.NewInvoice()
+
+	// Set invoice logo
+	//invoice.SetLogo(logo)
+
+	// Set invoice information
+	invoice.SetNumber("0001")
+	invoice.SetDate("01/11/2019")
+	invoice.SetDueDate("10/11/2019")
+	invoice.AddInfo("Payment terms", "Due on receipt")
+	invoice.AddInfo("Paid", "No")
+
+	// Set invoice address
+	invoice.SetSellerAddress(&creator.InvoiceAddress{
+		Name:    "John Doe",
+		Street:  "8 Elm Street",
+		Zip:     "Cambridge",
+		City:    "56351",
+		Country: "Indonesia",
+		Phone:   "081-xxx-xxx-987",
+		Email:   "johndoe@gmail.com",
+	})
+
+	invoice.SetBuyerAddress(&creator.InvoiceAddress{
+		Name:    "Jane Doe",
+		Street:  "9 Elm Street",
+		Zip:     "56372",
+		City:    "London",
+		Country: "Indonesia",
+		Phone:   "081804xxx897",
+		Email:   "janedoe@gmail.com",
+	})
+
+	// Add products to invoice
+	for i := 1; i < 6; i++ {
+		invoice.AddLine(
+			fmt.Sprintf("Test product #%d", 1),
+			"1",
+			strconv.Itoa((i-1) * 7),
+			strconv.Itoa((i + 4) * 3),
+		)
+	}
+
+	// Set invoice totals
+	invoice.SetSubtotal("Rp 1.000.000")
+	invoice.AddTotalLine("Tax (10%)", "Rp 100.000")
+	invoice.AddTotalLine("Shipping", "Rp 50.000")
+	invoice.SetTotal("Rp 1.150.000")
+
+	// Set invoice content sections
+	invoice.SetNotes("Notes", "Thank you for your business")
+	invoice.SetTerms("Terms and conditions", "Full refund for 60 days after purchase")
+
+	return invoice, nil
+}

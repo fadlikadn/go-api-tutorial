@@ -10,6 +10,7 @@ import (
 	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
 	"github.com/gorilla/mux"
 	"github.com/tidwall/gjson"
+	"github.com/unidoc/unipdf/v3/creator"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -418,6 +419,38 @@ func (server *Server) SendTransactionStatusEmail(w http.ResponseWriter, r *http.
 
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionGotten.ID))
 	responses.JSON(w, http.StatusCreated, serviceTransactionGotten)
+}
 
+func (server *Server) CreateInvoiceServiceTransaction(w http.ResponseWriter, r *http.Request) {
+	// Instantiate new PDF creator
+	c := creator.New()
 
+	// Create a new PDF page and select it for editing
+	c.NewPage()
+
+	// Create new invoice and populate it with date
+	serviceTransaction := models.ServiceTransaction{}
+	invoice, err := serviceTransaction.CreateInvoice(c, "")
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Write invoice to page
+	err = c.Draw(invoice)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Write output file
+	// Alternative is writing to a Writer interface by using c.Write
+	//err = c.WriteToFile("simple_invoice.pdf")
+	err = c.Write(w)
+	if err != nil {
+		fmt.Println("error on write PDF File")
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	w.Header().Set("Content-type", "application/pdf")
 }
