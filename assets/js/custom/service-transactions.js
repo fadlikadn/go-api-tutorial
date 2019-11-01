@@ -297,6 +297,12 @@ $(function() {
                 });
             });
 
+            $(document).on('click', '#btnServiceTransactionCreateInvoice', function(e) {
+                e.preventDefault();
+
+                console.log('create invoice');
+            });
+
             $(document).on('click', '#btnAdditionalCostSave', function(e) {
                 e.preventDefault();
 
