@@ -30,9 +30,7 @@ $(function() {
                 "columns": [
                     {
                         "data": "service_date", render: function(data, type, row, meta) {
-                            // TODO parse date and time using MomentJS
                             return moment(data).format('DD/MM/YYYY');
-                            // return data;
                         }
                     },
                     {
@@ -63,9 +61,19 @@ $(function() {
                     {
                         "data": "status", "defaultContent": ""
                     },
+                    // <a href='#' class='btn btn-sm btn-success tell_customer' data-key=${data} data-object='${JSON.stringify(row)}'>Tell Customer</a>
                     {
                         "data": "id", render: function(data, type, row, meta) {
-                            return `<a href='#' data-target='#serviceTransactionEditModal' data-toggle="modal" class='btn btn-sm btn-success service-transaction_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#serviceTransactionDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger service-transaction_delete' data-key=${data} >Delete</a>`;
+                            return `<a href='#' data-target='#serviceTransactionEditModal' data-toggle="modal" class='btn btn-sm btn-success service-transaction_edit' data-key=${data} data-object='${JSON.stringify(row)}'>Edit</a> &nbsp; <a href='#' data-target='#serviceTransactionDeleteModal' data-toggle="modal" class='btn btn-sm btn-danger service-transaction_delete' data-key=${data} >Delete</a> &nbsp;
+<div class="dropdown">
+    <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Tell Customer
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="#" data-target="#whatsappConfirmationModal" data-toggle="modal" data-object='${JSON.stringify(row)}' aria-haspopup="true" aria-expanded="false">Whatsapp</a>
+    </div>
+</div>
+`;
                         }
                     }
                 ]
@@ -159,16 +167,24 @@ $(function() {
         },
         _handleButtonEvents: function() {
             // Service Transaction Handle Button Events
-            // TODO implement button handler for service transaction management page
             var self = this;
             var $serviceTransactionEditModal = $('#serviceTransactionEditModal');
             var $serviceTransactionDeleteModal = $('#serviceTransactionDeleteModal');
+            var $whatsappConformationModal = $('#whatsappConfirmationModal');
+
+            $whatsappConformationModal.on('show.bs.modal', function(e) {
+                if ($(e.relatedTarget).data('object') != undefined) {
+                    let transactionObject = $(e.relatedTarget).data('object');
+                    let number = libphonenumber.parsePhoneNumberFromString(transactionObject.customer.phone, 'ID').number;
+                    $('#whatsappConfirmationModal #customer-whatsapp-number').val(number);
+                    $('#whatsappConfirmationModal #customer-object').val(JSON.stringify(transactionObject));
+                }
+            });
 
             $serviceTransactionDeleteModal.on('show.bs.modal', function(e) {
                 if ($(e.relatedTarget).data('key') != undefined) {
                     // Delete
                     var serviceTransactionId = $(e.relatedTarget).data('key');
-                    console.log(serviceTransactionId);
                     $('#btnServiceTransactionDelete').attr('data-id', serviceTransactionId);
                 }
             });
@@ -179,15 +195,12 @@ $(function() {
                     var serviceTransactionId = $(e.relatedTarget).data('key');
                     var serviceTransactionObject = $(e.relatedTarget).data('object');
                     ServiceTransactions.selectedServiceTransactionData = serviceTransactionObject;
-                    // console.log(serviceTransactionId, serviceTransactionObject);
-                    // console.log('prepare for edit');
                     self._mapServiceTransactionModal(serviceTransactionObject);
                     self._mapAdditionalCostTableModal(serviceTransactionObject);
                     $('#btnServiceTransactionEditSave').attr('data-mode', 'edit');
                     $('#service-transaction-id').val(serviceTransactionId);
                 } else {
-                    // ADd
-                    console.log('prepare for add');
+                    // Add
                     $('#btnServiceTransactionEditSave').attr('data-mode', 'add');
                     self._mapServiceTransactionModal(null);
                 }
@@ -209,10 +222,36 @@ $(function() {
                 let url = base_url + '/api/service-transactions/' + $('#btnServiceTransactionDelete').attr('data-id');
 
                 APIs.ServiceTransactionDelete($('#btnServiceTransactionDelete').attr('data-id'), function(res) {
-                    console.log(res);
                     $('#table-service-transactions').DataTable().ajax.reload();
                     $('#serviceTransactionDeleteModal').modal('hide');
                 });
+            });
+
+            $(document).on('click', '#btnSendStatusWhatsapp', function(e) {
+                e.preventDefault();
+                let object = JSON.parse($('#customer-object').val());
+                let number = $('#customer-whatsapp-number').val().toString();
+
+                let message;
+                switch(object.status) {
+                    case 'new' :
+                        message = `Bapak/Ibu ${object.customer.name},\n saat ini data service anda telah masuk ke sistem kami. Terima kasih.`;
+                        break;
+                    case 'in-progress':
+                        message = `Bapak/Ibu ${object.customer.name},\n kami telah memulai pengerjaan service barang yang telah anda titipkan ke kami. Terima kasih.`;
+                        break;
+                    case 'completed':
+                        message = `Bapak/Ibu ${object.customer.name}, service telah selesai, anda bisa mengambil barang service anda. Terima kasih.`;
+                        break;
+                    default:
+                        message = `Bapak/Ibu ${object.customer.name}, service telah selesai, anda bisa mengambil barang service anda. Terima kasih.`;
+                }
+
+                let whatsappUrl = `https://web.whatsapp.com/send?phone=${number}&text=${message}`;
+                window.open(whatsappUrl, '_blank');
+                window.focus();
+
+                $('#whatsappConfirmationModal').modal('hide');
             });
 
             $(document).on('click', '#btnServiceTransactionEditSave', function(e) {
@@ -247,13 +286,10 @@ $(function() {
                 };
 
                 $.each(payload.additionalItems, function(key, value) {
-                    console.log(key);
                     payload.additionalItems[key].id = payload.additionalItems[key].id.toString();
                     payload.additionalItems[key].cost = payload.additionalItems[key].cost.toString();
                     payload.additionalItems[key].st_id = payload.additionalItems[key].st_id.toString();
                 });
-                console.log(payload);
-                console.log(JSON.stringify(payload));
 
                 APIs.ServiceTransactionUpdate(payload, ServiceTransactions.selectedServiceTransactionData.id, function(res) {
                     $('#table-service-transactions').DataTable().ajax.reload();
@@ -275,9 +311,9 @@ $(function() {
                             ",").toString(),
                         "st_id": $('#service-transaction-id').val(),
                     };
-                    console.log(newAdditionalCost);
+                    // console.log(newAdditionalCost);
                     ServiceTransactions.additionalItemsTableData.push(newAdditionalCost);
-                    console.log(ServiceTransactions.additionalItemsTableData);
+                    // console.log(ServiceTransactions.additionalItemsTableData);
                 } else {
                     // edit
                     let key = $('#additional-cost-id').val();
@@ -291,7 +327,7 @@ $(function() {
                         "st_id": $('#service-transaction-id').val(),
                     };
                     ServiceTransactions.additionalItemsTableData[existingIndex] = updatedAdditionalCost;
-                    console.log(ServiceTransactions.additionalItemsTableData);
+                    // console.log(ServiceTransactions.additionalItemsTableData);
                 }
                 $('#table-additional-cost-modal').DataTable().ajax.reload();
                 $('#additional-cost-form').trigger('reset');
@@ -307,18 +343,16 @@ $(function() {
         },
         _mapAdditionalCostTableModal: function(serviceTransaction) {
             var self = this;
-            console.log(serviceTransaction);
+            // console.log(serviceTransaction);
 
             if (serviceTransaction !== null) {
                 console.log(serviceTransaction.additional_items);
                 if (serviceTransaction.additional_items.length > 0) {
-                    console.log('more than 0');
-
                     ServiceTransactions.additionalItemsTableData = [...serviceTransaction.additional_items];
                     $.each(ServiceTransactions.additionalItemsTableData, function(key, value) {
                        ServiceTransactions.additionalItemsTableData[key].id = ServiceTransactions.additionalItemsTableData[key].id.toString();
                     });
-                    console.log(ServiceTransactions.additionalItemsTableData);
+                    // console.log(ServiceTransactions.additionalItemsTableData);
                 } else {
                     ServiceTransactions.additionalItemsTableData = [];
                 }
@@ -328,8 +362,6 @@ $(function() {
 
         _mapServiceTransactionModal: function(serviceTransaction) {
             var self = this;
-            // TODO implement modal for service transaction
-            console.log(serviceTransaction);
             if (serviceTransaction !== null) {
                 // $('#serviceTransactionEditModal #service-transaction-date').val(serviceTransaction.service_date);
                 $('#serviceTransactionEditModal #service-transaction-date').val(moment(serviceTransaction.service_date).format('DD/MM/YYYY'));

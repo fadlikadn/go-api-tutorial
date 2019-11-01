@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/fadlikadn/go-api-tutorial/api/models"
 	"github.com/fadlikadn/go-api-tutorial/api/responses"
+	"github.com/fadlikadn/go-api-tutorial/api/utils/email"
 	"github.com/fadlikadn/go-api-tutorial/api/utils/formateerror"
 	"github.com/gorilla/mux"
 	"github.com/tidwall/gjson"
@@ -392,4 +393,31 @@ func (server *Server) ManageServiceTransactionWeb(w http.ResponseWriter, r *http
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func (server *Server) SendTransactionStatusEmail(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	serviceTransaction := models.ServiceTransaction{}
+	serviceTransactionGotten, err := serviceTransaction.FindServiceTransactionByID(server.DB, uint32(pid))
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	_, err = email.SendStatusEmail(serviceTransactionGotten.Customer.Email)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, serviceTransactionGotten.ID))
+	responses.JSON(w, http.StatusCreated, serviceTransactionGotten)
+
+
 }

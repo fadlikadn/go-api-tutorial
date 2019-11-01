@@ -17,6 +17,7 @@ require (
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/metakeule/fmtdate v1.1.2
 	github.com/rs/cors v1.7.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/tidwall/gjson v1.3.2
 	golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc
 	gopkg.in/go-playground/assert.v1 v1.2.1

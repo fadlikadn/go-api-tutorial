@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/badoux/checkmail"
 	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 	"html"
 	"strings"
 	"time"
@@ -11,6 +12,7 @@ import (
 
 type Customer struct {
 	ID			uint32		`gorm:"primary_key;auto_increment" json:"id"`
+	UUID		string		`gorm:"unique;"`
 	Name		string		`gorm:"size:255;not null;unique" json:"name"`
 	Email		string		`gorm:"size:255;unique" json:"email"`
 	Phone		string		`gorm:"size:100;" json:"phone"`
@@ -18,6 +20,11 @@ type Customer struct {
 	Notes		string		`gorm:"size:255" json:"notes"`
 	CreatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt	time.Time	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+}
+
+func (c *Customer) BeforeCreate(scope *gorm.Scope) error {
+	id := uuid.NewV4().String()
+	return scope.SetColumn("UUID", id)
 }
 
 func (c *Customer) Prepare() {

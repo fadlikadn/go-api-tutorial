@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/metakeule/fmtdate"
+	uuid "github.com/satori/go.uuid"
 	"html"
 	"strconv"
 	"strings"
@@ -14,6 +15,7 @@ import (
 
 type ServiceTransaction struct {
 	ID			uint32		`gorm:"primary_key;auto_increment" json:"id"`
+	UUID		string		`gorm:"unique;"`
 	ServiceDate	time.Time	`gorm:"not null" json:"service_date"` // Tanggal Service
 	InvoiceNo	string		`gorm:"size:30; not_null" json:"invoice_no"` // Nomor Invoice
 	Customer	Customer	`json:"customer"` // Pelanggan
@@ -32,8 +34,13 @@ type ServiceTransaction struct {
 	AdditionalItems	[]AdditionalItem	`gorm:"foreignkey:STId" json:"additional_items"`
 }
 
+func (s *ServiceTransaction) BeforeCreate(scope *gorm.Scope) error {
+	id := uuid.NewV4().String()
+	return scope.SetColumn("UUID", id)
+}
+
 func (s *ServiceTransaction) Prepare() {
-	s.ID = 0
+	//s.ID = 0
 	s.InvoiceNo = html.EscapeString(strings.TrimSpace(s.InvoiceNo))
 	s.Customer = Customer{}
 	s.ItemName = html.EscapeString(strings.TrimSpace(s.ItemName))
@@ -251,3 +258,5 @@ func (s *ServiceTransaction) UnmarshalJSON(j []byte, customer int) error {
 
 	return nil
 }
+
+// TODO Implement Create Invoice for Service Transaction

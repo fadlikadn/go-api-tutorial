@@ -312,6 +312,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-info mr-auto" id="btnServiceTransactionCreateInvoice">Create Invoice</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnServiceTransactionEditCancel">Cancel</button>
                     <button type="button" class="btn btn-primary" id="btnServiceTransactionEditSave">Save</button>
                 </div>
@@ -371,6 +372,27 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-danger" id="btnAdditionalCostDelete" data-id="" href="#">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="whatsappConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="Tell Customer via Whatsapp" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Are you sure want to tell customer via Whatsapp?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" id="customer-whatsapp-number" type="text" placeholder="put customer Whatsapp number here"/>
+                    <input type="hidden" id="customer-object"/>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" id="btnSendStatusWhatsapp" data-id="" href="#">Send</a>
                 </div>
             </div>
         </div>

@@ -56,7 +56,7 @@ var serviceTransactions = []models.ServiceTransaction{
 	models.ServiceTransaction{
 		ServiceDate: time.Date(2019, 8, 31, 0,0, 0, 0, time.UTC),
 		InvoiceNo:   "1000",
-		CustomerID:  1,
+		CustomerID:  4,
 		ItemName:    "Lenovo B-470",
 		DamageType:  "Mati",
 		Equipment:   "Charger, Kabel Power, Kabel Data",
@@ -67,7 +67,7 @@ var serviceTransactions = []models.ServiceTransaction{
 		Price:       650000,
 		TotalPrice:  650000,
 		TakenDate:   time.Date(2019, 9, 20, 0, 0, 0, 0, time.UTC),
-		Status:      "Masuk",
+		Status:      "new",
 	},
 }
 
@@ -91,6 +91,13 @@ var customers = []models.Customer{
 		Email:     "sigit@gmail.com",
 		Phone:     "081225678091",
 		Address:   "Sidojoyo Wonosobo",
+		Notes:     "",
+	},
+	models.Customer{
+		Name:      "Fadlika Dita Nurjanto",
+		Email:     "fadlikadn@gmail.com",
+		Phone:     "085729681962",
+		Address:   "Yogyakarta",
 		Notes:     "",
 	},
 }

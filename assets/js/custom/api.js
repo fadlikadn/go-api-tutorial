@@ -65,6 +65,16 @@ $(function() {
                 success: callback,
             });
         },
+        ServiceTransactionSendStatusEmail: function(id, callback) {
+            let url = base_url + "/api/service-transactions/sendstatusemail/" + id;
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                contentType: 'application/json',
+                success: callback,
+            });
+        },
         init: function() {
 
         }
