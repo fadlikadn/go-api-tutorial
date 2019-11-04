@@ -1,0 +1,62 @@
+{{ define "index-main" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ template "_header" .title}}
+    <link href="/assets/css/main-page.css" rel="stylesheet">
+</head>
+<body>
+    <section id="cover">
+        <div id="cover-caption">
+            <div id="container" class="container">
+                <div class="row text-white">
+                    <div class="col-sm-6 offset-sm-3 text-center">
+                        <h1 class="display-4">Cek Invoice</h1>
+                        <div class="info-form">
+                            <form action="" class="form justify-content-center">
+                                <div class="form-group">
+{{/*                                    <label class="sr-only">Cari Invoice</label>*/}}
+                                    <input type="text" class="form-control" placeholder="Cari Invoice. Contoh : 9451" style="width: 100%; text-align: center" id="invoice-no">
+                                </div>
+                                &nbsp;
+                                <button type="button" class="btn btn-success" id="btnSearchInvoice">Cari Sekarang</button>
+                            </form>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="invoiceFoundModal" tabindex="-1" role="dialog" aria-labelledby="Data Invoice" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceTransactionEditModalLabel">Data Invoice</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Invoice Ditemukan
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-3">Nama Barang</div>
+                            <div class="col-7"><span class="item-name">Value Nama Barang</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnServiceTransactionEditCancel">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/js/pace.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/custom/main-check.js"></script>
+</html>
+{{ end }}

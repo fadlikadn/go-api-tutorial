@@ -221,7 +221,7 @@ $(function() {
                 }).then(function(res) {
                     console.log(res);
                     // alert('berhasil \n' + res);
-                    window.location.replace(base_url+'/');
+                    window.location.replace(base_url+'/dashboard');
                 }).catch(function(err) {
                     console.log(err);
                     alert('gagal');

@@ -21,11 +21,12 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/activation-pending", middlewares.SetMiddlewareAuthenticationSessionOut(s.ActivationPending)).Methods("GET")
 
 	// Features
-	s.Router.HandleFunc("/", middlewares.SetMiddlewareAuthenticationSession(s.HomeWeb)).Methods("GET")
-	s.Router.HandleFunc("/users", middlewares.SetMiddlewareAuthenticationSession(s.ManageUserWeb)).Methods("GET")
-	s.Router.HandleFunc("/customers", middlewares.SetMiddlewareAuthenticationSession(s.ManageCustomerWeb)).Methods("GET")
-	s.Router.HandleFunc("/service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.ManageServiceTransactionWeb)).Methods("GET")
-	s.Router.HandleFunc("/add-service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.AddServiceTransactionWeb)).Methods("GET")
+	s.Router.HandleFunc("/", s.IndexMain).Methods("GET")
+	s.Router.HandleFunc("/dashboard", middlewares.SetMiddlewareAuthenticationSession(s.DashboardHome)).Methods("GET")
+	s.Router.HandleFunc("/dashboard/users", middlewares.SetMiddlewareAuthenticationSession(s.ManageUserWeb)).Methods("GET")
+	s.Router.HandleFunc("/dashboard/customers", middlewares.SetMiddlewareAuthenticationSession(s.ManageCustomerWeb)).Methods("GET")
+	s.Router.HandleFunc("/dashboard/service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.ManageServiceTransactionWeb)).Methods("GET")
+	s.Router.HandleFunc("/dashboard/add-service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.AddServiceTransactionWeb)).Methods("GET")
 
 	/**
 	Static Files such as JS, CSS, others
@@ -83,4 +84,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/api/posts/{id}", middlewares.SetMiddlewareJSON(s.GetPost)).Methods("GET")
 	s.Router.HandleFunc("/api/posts/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdatePost))).Methods("PUT")
 	s.Router.HandleFunc("/api/posts/{id}", middlewares.SetMiddlewareAuthentication(s.DeletePost)).Methods("DELETE")
+
+	// Search Invoice
+	s.Router.HandleFunc("/api/search/invoice/{invoiceno}", middlewares.SetMiddlewareJSON(s.SearchInvoice)).Methods("GET")
 }

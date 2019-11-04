@@ -1,0 +1,17 @@
+html,
+body{
+    height: 100%;
+}
+
+#cover {
+    background: #222 url('') center center no-repeat;
+    background-size: cover;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+#cover-caption {
+    width: 100%;
+}

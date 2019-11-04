@@ -271,6 +271,26 @@ func (server *Server) UpdateComplexServiceTransaction(w http.ResponseWriter, r *
 	responses.JSON(w, http.StatusCreated, serviceTransactionUpdated)
 }
 
+func (server *Server) SearchInvoice(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	invoiceno := vars["invoiceno"]
+	fmt.Println(invoiceno)
+	if invoiceno == "" {
+		responses.ERROR(w, http.StatusBadRequest, errors.New("Invalid Invoice"))
+		return
+	}
+
+	serviceTransaction := models.ServiceTransaction{}
+
+	serviceTransactionReceived, err := serviceTransaction.FindServiceTransactionByInvoiceNo(server.DB, invoiceno)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, serviceTransactionReceived)
+}
+
 func (server *Server) GetServiceTransactions(w http.ResponseWriter, r *http.Request) {
 	serviceTransaction := models.ServiceTransaction{}
 

@@ -11,7 +11,23 @@ func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, "Welcome to this awesome API")
 }
 
-func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
+func (server *Server) IndexMain(w http.ResponseWriter, r *http.Request) {
+	indexTemplate := append(mainTemplateString, path.Join("views", "index-main.html"))
+	var tmpl = template.Must(template.ParseFiles(indexTemplate...))
+	var data = M{
+		"title": "Learning Golang",
+		"name": "Mitrais",
+		"sidebar": "home",
+	}
+
+	//err := tmpl.Execute(w, data)
+	err := tmpl.ExecuteTemplate(w, "index-main", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (server *Server) DashboardHome(w http.ResponseWriter, r *http.Request) {
 	//var filepath = path.Join("views", "index.html")
 	//var tmpl, err = template.ParseFiles(filepath)
 	//if err != nil {
@@ -19,11 +35,11 @@ func (server *Server) HomeWeb(w http.ResponseWriter, r *http.Request) {
 	//	return
 	//}
 
-	indexTemplate := append(mainTemplateString, path.Join("views", "index-template.html"))
+	indexTemplate := append(mainTemplateString, path.Join("views", "index-dashboard.html"))
 	var tmpl = template.Must(template.ParseFiles(indexTemplate...))
 
 	//var tmpl = template.Must(template.ParseFiles(
-	//	path.Join("views", "index-template.html"),
+	//	path.Join("views", "index-dashboard.html"),
 	//	path.Join("views", "_header.html"),
 	//	path.Join("views", "_top-navbar.html"),
 	//	path.Join("views", "_sidebar.html"),

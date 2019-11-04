@@ -383,7 +383,7 @@ $(function() {
                         console.log(res);
                         $('#confirmationProcessModal').modal('hide');
                         // TODO implement cetak nota/kwitansi (printable / PDF)
-                        window.location.replace(base_url + "/service-transactions");
+                        window.location.replace(base_url + "/dashboard/service-transactions");
                     });
 
                 /*// hit to API

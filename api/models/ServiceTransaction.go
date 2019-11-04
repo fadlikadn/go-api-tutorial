@@ -10,6 +10,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/unidoc/unipdf/v3/creator"
 	"html"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -112,6 +113,30 @@ func (s *ServiceTransaction) FindAllServiceTransactions(db *gorm.DB) (*[]Service
 func (s *ServiceTransaction) FindServiceTransactionByID(db *gorm.DB, pid uint32) (*ServiceTransaction, error) {
 	var err error
 	err = db.Debug().Model(&ServiceTransaction{}).Where("id = ?", pid).Take(&s).Error
+	if err != nil {
+		return &ServiceTransaction{}, err
+	}
+	if s.ID != 0 {
+		err = db.Debug().Model(&Customer{}).Where("id = ?", s.CustomerID).Take(&s.Customer).Error
+		if err != nil {
+			return &ServiceTransaction{}, err
+		}
+	}
+
+	// Additional Item list
+	err = db.Debug().Model(&AdditionalItem{}).Where("st_id = ?", s.ID).Find(&s.AdditionalItems).Error
+	if err != nil {
+		fmt.Println("error during get additional items query")
+		fmt.Println(err)
+		return &ServiceTransaction{}, err
+	}
+
+	return s, nil
+}
+
+func (s *ServiceTransaction) FindServiceTransactionByInvoiceNo(db *gorm.DB, invoiceNo string) (*ServiceTransaction, error) {
+	var err error
+	err = db.Debug().Model(&ServiceTransaction{}).Where("invoice_no = ?", invoiceNo).Take(&s).Error
 	if err != nil {
 		return &ServiceTransaction{}, err
 	}
@@ -352,6 +377,18 @@ func (s *ServiceTransaction) CreateInvoice(uuid string, db *gorm.DB, c *creator.
 
 		return invoice, nil
 	} else {
+		// Create an instance of Logo used as a header for the invoice
+		// If the image is not stored locally, you can use NewImageFromData to generate it byte array
+		//logo, err := c.NewImageFromData([]byte("assets/image/company_logo.png"))
+		logo, err := c.NewImageFromFile("assets/image/company_logo.png")
+		logo.ScaleToWidth(500)
+		if err != nil {
+			return nil, err
+		}
+
+		// Set invoice logo
+		invoice.SetLogo(logo)
+
 		serviceTransaction := ServiceTransaction{}
 		serviceTransactionFound, err := serviceTransaction.FindServiceTransactionByUUID(db, uuid)
 		if err != nil {
@@ -359,7 +396,6 @@ func (s *ServiceTransaction) CreateInvoice(uuid string, db *gorm.DB, c *creator.
 		}
 
 		invoice.SetNumber(serviceTransactionFound.InvoiceNo)
-		invoice.SetDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.ServiceDate))
 		invoice.SetDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.ServiceDate))
 		invoice.SetDueDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.TakenDate))
 		invoice.AddInfo("Tipe Reparasi", serviceTransactionFound.RepairType)
@@ -369,21 +405,21 @@ func (s *ServiceTransaction) CreateInvoice(uuid string, db *gorm.DB, c *creator.
 
 		// Set invoice address
 		invoice.SetSellerAddress(&creator.InvoiceAddress{
-			Name:    "John Doe",
-			Street:  "8 Elm Street",
-			Zip:     "Cambridge",
-			City:    "56351",
-			Country: "Indonesia",
-			Phone:   "081-xxx-xxx-987",
-			Email:   "johndoe@gmail.com",
+			Name:    os.Getenv("COMPANY_NAME"),
+			Street:  os.Getenv("COMPANY_ADDRESS"),
+			//Zip:     "Cambridge",
+			City:    os.Getenv("COMPANY_CITY"),
+			//Country: "Indonesia",
+			Phone:   os.Getenv("COMPANY_PHONE"),
+			//Email:   "johndoe@gmail.com",
 		})
 
 		// Set buyer name
 		invoice.SetBuyerAddress(&creator.InvoiceAddress{
 			Name:    serviceTransactionFound.Customer.Name,
 			Street:  serviceTransaction.Customer.Address,
-			Zip:     "-",
-			City:    "-",
+			//Zip:     "-",
+			//City:    "-",
 			Country: "Indonesia",
 			Phone:   serviceTransaction.Customer.Phone,
 			Email:   serviceTransaction.Customer.Email,
