@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/gorm v1.9.11
 	github.com/joho/godotenv v1.3.0
+	github.com/leekchan/accounting v0.0.0-20190702062627-a09595581342
 	github.com/mailgun/mailgun-go/v3 v3.6.0
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/metakeule/fmtdate v1.1.2

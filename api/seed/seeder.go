@@ -57,17 +57,60 @@ var serviceTransactions = []models.ServiceTransaction{
 		ServiceDate: time.Date(2019, 8, 31, 0,0, 0, 0, time.UTC),
 		InvoiceNo:   "1000",
 		CustomerID:  4,
-		ItemName:    "Lenovo B-470",
+		ItemName:    "Perbaikan Lenovo B-470",
 		DamageType:  "Mati",
-		Equipment:   "Charger, Kabel Power, Kabel Data",
+		Equipment:   "charger,kabel-power,kabel-data",
 		Description: "Garansi 1 bulan",
 		Technician:  "Agus Widodo",
 		RepairType:  "Service Mainboard",
 		SparePart:   "Mainboard ganti",
-		Price:       650000,
-		TotalPrice:  650000,
+		Price:       250000,
+		TotalPrice:  1150000,
 		TakenDate:   time.Date(2019, 9, 20, 0, 0, 0, 0, time.UTC),
 		Status:      "new",
+	},
+	models.ServiceTransaction{
+		ServiceDate: time.Date(2019, 8, 26, 0,0, 0, 0, time.UTC),
+		InvoiceNo:   "1001",
+		CustomerID:  3,
+		ItemName:    "Perbaikan HP Elitebook",
+		DamageType:  "LCD Rusak",
+		Equipment:   "tas-softcase,charger",
+		Description: "Garansi 1 bulan",
+		Technician:  "Endang Sutisna",
+		RepairType:  "Service LCD",
+		SparePart:   "LCD (kemungkinan ganti)",
+		Price:       400000,
+		TotalPrice:  1000000,
+		TakenDate:   time.Date(2019, 9, 25, 0, 0, 0, 0, time.UTC),
+		Status:      "new",
+	},
+}
+
+var additionalItems = []models.AdditionalItem{
+	models.AdditionalItem{
+		Name:  "Mainboard Lenovo",
+		Notes: "Ganti Mainboard",
+		Cost:  300000,
+		STId:  1,
+	},
+	models.AdditionalItem{
+		Name:  "LCD Lenovo",
+		Notes: "Ganti Lenovo",
+		Cost:  400000,
+		STId:  1,
+	},
+	models.AdditionalItem{
+		Name:  "Keyboard Logitech",
+		Notes: "Tambah Keyboard",
+		Cost:  200000,
+		STId:  1,
+	},
+	models.AdditionalItem{
+		Name:  "LCD HP Elitebook",
+		Notes: "Ganti LCD (75%)",
+		Cost:  600000,
+		STId:  2,
 	},
 }
 
@@ -171,6 +214,13 @@ func Load(db *gorm.DB) {
 		err = db.Debug().Model(&models.ServiceTransaction{}).Create(&serviceTransactions[i]).Error
 		if err != nil {
 			log.Fatalf("cannot seed service transactions table: %v", err)
+		}
+	}
+
+	for i, _ := range additionalItems {
+		err = db.Debug().Model(&models.AdditionalItem{}).Create(&additionalItems[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed additional items table: %v", err)
 		}
 	}
 }

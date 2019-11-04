@@ -199,6 +199,8 @@ $(function() {
                     self._mapAdditionalCostTableModal(serviceTransactionObject);
                     $('#btnServiceTransactionEditSave').attr('data-mode', 'edit');
                     $('#service-transaction-id').val(serviceTransactionId);
+                    $('#btnServiceTransactionCreateInvoice').attr('data-key', serviceTransactionObject.UUID);
+                    console.log(serviceTransactionObject);
                 } else {
                     // Add
                     $('#btnServiceTransactionEditSave').attr('data-mode', 'add');
@@ -301,7 +303,9 @@ $(function() {
                 e.preventDefault();
 
                 console.log('create invoice');
-                let url = base_url + "/api/invoice/service-transactions";
+                console.log($('#btnServiceTransactionCreateInvoice').attr('data-key'));
+                let key = $('#btnServiceTransactionCreateInvoice').attr('data-key');
+                let url = `${base_url}/api/invoice/service-transactions/${key}`;
                 window.open(url, '_blank');
             });
 

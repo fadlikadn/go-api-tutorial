@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/leekchan/accounting"
 	"github.com/metakeule/fmtdate"
 	uuid "github.com/satori/go.uuid"
 	"github.com/unidoc/unipdf/v3/creator"
@@ -111,6 +112,30 @@ func (s *ServiceTransaction) FindAllServiceTransactions(db *gorm.DB) (*[]Service
 func (s *ServiceTransaction) FindServiceTransactionByID(db *gorm.DB, pid uint32) (*ServiceTransaction, error) {
 	var err error
 	err = db.Debug().Model(&ServiceTransaction{}).Where("id = ?", pid).Take(&s).Error
+	if err != nil {
+		return &ServiceTransaction{}, err
+	}
+	if s.ID != 0 {
+		err = db.Debug().Model(&Customer{}).Where("id = ?", s.CustomerID).Take(&s.Customer).Error
+		if err != nil {
+			return &ServiceTransaction{}, err
+		}
+	}
+
+	// Additional Item list
+	err = db.Debug().Model(&AdditionalItem{}).Where("st_id = ?", s.ID).Find(&s.AdditionalItems).Error
+	if err != nil {
+		fmt.Println("error during get additional items query")
+		fmt.Println(err)
+		return &ServiceTransaction{}, err
+	}
+
+	return s, nil
+}
+
+func (s *ServiceTransaction) FindServiceTransactionByUUID(db *gorm.DB, uuid string) (*ServiceTransaction, error) {
+	var err error
+	err = db.Debug().Model(&ServiceTransaction{}).Where("uuid = ?", uuid).Take(&s).Error
 	if err != nil {
 		return &ServiceTransaction{}, err
 	}
@@ -261,67 +286,135 @@ func (s *ServiceTransaction) UnmarshalJSON(j []byte, customer int) error {
 }
 
 // TODO Implement Create Invoice for Service Transaction
-func (s *ServiceTransaction) CreateInvoice(c *creator.Creator, logoPath string) (*creator.Invoice, error) {
-	// Create an instance of Logo used as a header for the invoice
-	// If the image is not stored locally, you can use NewImageFromData to generate it byte array
-	/*logo, err := c.NewImageFromData([]byte("Logo Company"))
-	if err != nil {
-		return nil, err
-	}*/
-
+func (s *ServiceTransaction) CreateInvoice(uuid string, db *gorm.DB, c *creator.Creator, logoPath string) (*creator.Invoice, error) {
 	// Create a new invoice
 	invoice := c.NewInvoice()
+	ac := accounting.Accounting{Symbol: "Rp ", Precision:0, Thousand: ".", Decimal: ","}
 
-	// Set invoice logo
-	//invoice.SetLogo(logo)
+	if (uuid == "") {
+		// Create an instance of Logo used as a header for the invoice
+		// If the image is not stored locally, you can use NewImageFromData to generate it byte array
+		/*logo, err := c.NewImageFromData([]byte("Logo Company"))
+		if err != nil {
+			return nil, err
+		}*/
 
-	// Set invoice information
-	invoice.SetNumber("0001")
-	invoice.SetDate("01/11/2019")
-	invoice.SetDueDate("10/11/2019")
-	invoice.AddInfo("Payment terms", "Due on receipt")
-	invoice.AddInfo("Paid", "No")
+		// Set invoice logo
+		//invoice.SetLogo(logo)
 
-	// Set invoice address
-	invoice.SetSellerAddress(&creator.InvoiceAddress{
-		Name:    "John Doe",
-		Street:  "8 Elm Street",
-		Zip:     "Cambridge",
-		City:    "56351",
-		Country: "Indonesia",
-		Phone:   "081-xxx-xxx-987",
-		Email:   "johndoe@gmail.com",
-	})
+		// Set invoice information
+		invoice.SetNumber("0001")
+		invoice.SetDate("01/11/2019")
+		invoice.SetDueDate("10/11/2019")
+		invoice.AddInfo("Payment terms", "Due on receipt")
+		invoice.AddInfo("Paid", "No")
 
-	invoice.SetBuyerAddress(&creator.InvoiceAddress{
-		Name:    "Jane Doe",
-		Street:  "9 Elm Street",
-		Zip:     "56372",
-		City:    "London",
-		Country: "Indonesia",
-		Phone:   "081804xxx897",
-		Email:   "janedoe@gmail.com",
-	})
+		// Set invoice address
+		invoice.SetSellerAddress(&creator.InvoiceAddress{
+			Name:    "John Doe",
+			Street:  "8 Elm Street",
+			Zip:     "Cambridge",
+			City:    "56351",
+			Country: "Indonesia",
+			Phone:   "081-xxx-xxx-987",
+			Email:   "johndoe@gmail.com",
+		})
 
-	// Add products to invoice
-	for i := 1; i < 6; i++ {
+		invoice.SetBuyerAddress(&creator.InvoiceAddress{
+			Name:    "Jane Doe",
+			Street:  "9 Elm Street",
+			Zip:     "56372",
+			City:    "London",
+			Country: "Indonesia",
+			Phone:   "081804xxx897",
+			Email:   "janedoe@gmail.com",
+		})
+
+		// Add products to invoice
+		for i := 1; i < 6; i++ {
+			invoice.AddLine(
+				fmt.Sprintf("Test product #%d", 1),
+				"1",
+				strconv.Itoa((i-1) * 7),
+				strconv.Itoa((i + 4) * 3),
+			)
+		}
+
+		// Set invoice totals
+		invoice.SetSubtotal("Rp 1.000.000")
+		invoice.AddTotalLine("Tax (10%)", "Rp 100.000")
+		invoice.AddTotalLine("Shipping", "Rp 50.000")
+		invoice.SetTotal("Rp 1.150.000")
+
+		// Set invoice content sections
+		invoice.SetNotes("Notes", "Thank you for your business")
+		invoice.SetTerms("Terms and conditions", "Full refund for 60 days after purchase")
+
+		return invoice, nil
+	} else {
+		serviceTransaction := ServiceTransaction{}
+		serviceTransactionFound, err := serviceTransaction.FindServiceTransactionByUUID(db, uuid)
+		if err != nil {
+			return nil, err
+		}
+
+		invoice.SetNumber(serviceTransactionFound.InvoiceNo)
+		invoice.SetDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.ServiceDate))
+		invoice.SetDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.ServiceDate))
+		invoice.SetDueDate(fmtdate.Format("DD/MM/YYYY", serviceTransactionFound.TakenDate))
+		invoice.AddInfo("Tipe Reparasi", serviceTransactionFound.RepairType)
+		invoice.AddInfo("Kelengkapan", serviceTransactionFound.Equipment)
+		invoice.AddInfo("Kerusakan", serviceTransactionFound.DamageType)
+		invoice.AddInfo("Dibayar", "Belum")
+
+		// Set invoice address
+		invoice.SetSellerAddress(&creator.InvoiceAddress{
+			Name:    "John Doe",
+			Street:  "8 Elm Street",
+			Zip:     "Cambridge",
+			City:    "56351",
+			Country: "Indonesia",
+			Phone:   "081-xxx-xxx-987",
+			Email:   "johndoe@gmail.com",
+		})
+
+		// Set buyer name
+		invoice.SetBuyerAddress(&creator.InvoiceAddress{
+			Name:    serviceTransactionFound.Customer.Name,
+			Street:  serviceTransaction.Customer.Address,
+			Zip:     "-",
+			City:    "-",
+			Country: "Indonesia",
+			Phone:   serviceTransaction.Customer.Phone,
+			Email:   serviceTransaction.Customer.Email,
+		})
+
+		// Add transaction to invoice
 		invoice.AddLine(
-			fmt.Sprintf("Test product #%d", 1),
+			serviceTransactionFound.ItemName,
 			"1",
-			strconv.Itoa((i-1) * 7),
-			strconv.Itoa((i + 4) * 3),
+			ac.FormatMoney(int(serviceTransactionFound.Price)),
+			ac.FormatMoney(int(serviceTransactionFound.Price)),
 		)
+
+		for i := 0; i < len(serviceTransactionFound.AdditionalItems); i++ {
+			invoice.AddLine(
+				serviceTransactionFound.AdditionalItems[i].Name,
+				"1",
+				ac.FormatMoney(int(serviceTransactionFound.AdditionalItems[i].Cost)),
+				ac.FormatMoney(int(serviceTransactionFound.AdditionalItems[i].Cost)),
+			)
+		}
+
+		// Set invoice totals
+		invoice.SetSubtotal(ac.FormatMoney(int(serviceTransactionFound.TotalPrice)))
+		invoice.SetTotal(ac.FormatMoney(int(serviceTransactionFound.TotalPrice)))
+
+		// Set invoice content sections
+		invoice.SetNotes("Notes", "Thank you for your business")
+		invoice.SetTerms("Terms and conditions", "Garansi 1 bulan")
+
+		return invoice, nil
 	}
 
-	// Set invoice totals
-	invoice.SetSubtotal("Rp 1.000.000")
-	invoice.AddTotalLine("Tax (10%)", "Rp 100.000")
-	invoice.AddTotalLine("Shipping", "Rp 50.000")
-	invoice.SetTotal("Rp 1.150.000")
-
-	// Set invoice content sections
-	invoice.SetNotes("Notes", "Thank you for your business")
-	invoice.SetTerms("Terms and conditions", "Full refund for 60 days after purchase")
-
-	return invoice, nil
 }

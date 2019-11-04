@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"strconv"
 )
 
 var (
@@ -24,7 +25,14 @@ func Run() {
 
 	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
 
-	seed.Load(server.DB)
+	APP_INSTALL, err := strconv.ParseBool(os.Getenv("APP_INSTALL_NEW"))
+	if err != nil {
+		log.Fatalf("Error getting env value APP_INSTALL_NEW")
+	}
+
+	if APP_INSTALL == true {
+		seed.Load(server.DB)
+	}
 
 	//seed.MigrateOnly(server.DB)
 

@@ -422,6 +422,14 @@ func (server *Server) SendTransactionStatusEmail(w http.ResponseWriter, r *http.
 }
 
 func (server *Server) CreateInvoiceServiceTransaction(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Create Invoice Service Transaction")
+	vars := mux.Vars(r)
+	uuid := vars["uuid"]
+	if uuid == "" {
+		responses.ERROR(w, http.StatusBadRequest, errors.New("invalid identifier"))
+		return
+	}
+
 	// Instantiate new PDF creator
 	c := creator.New()
 
@@ -430,7 +438,43 @@ func (server *Server) CreateInvoiceServiceTransaction(w http.ResponseWriter, r *
 
 	// Create new invoice and populate it with date
 	serviceTransaction := models.ServiceTransaction{}
-	invoice, err := serviceTransaction.CreateInvoice(c, "")
+	invoice, err := serviceTransaction.CreateInvoice(uuid, server.DB, c, "")
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Write invoice to page
+	err = c.Draw(invoice)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Write output file
+	// Alternative is writing to a Writer interface by using c.Write
+	//err = c.WriteToFile("simple_invoice.pdf")
+	err = c.Write(w)
+	if err != nil {
+		fmt.Println("error on write PDF File")
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	w.Header().Set("Content-type", "application/pdf")
+}
+
+func (server *Server) CreateSampleInvoiceServiceTransaction(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Create Sample Invoice Service Transaction")
+	serviceTransaction := models.ServiceTransaction{}
+
+	// Instantiate new PDF creator
+	c := creator.New()
+
+	// Create a new PDF page and select it for editing
+	c.NewPage()
+
+	// Create new invoice and populate it with date
+	invoice, err := serviceTransaction.CreateInvoice("", server.DB, c, "")
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
