@@ -29,7 +29,7 @@ var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 	key = []byte(os.Getenv("API_SECRET"))
 	store = sessions.NewCookieStore(key)
-	base_url = "http://localhost:8080"
+	base_url = os.Getenv("APP_URL")
 	sessionManager *scs.SessionManager
 	cookieHandler = securecookie.New(
 		securecookie.GenerateRandomKey(64),
@@ -104,7 +104,7 @@ func (server *Server) Run(addr string) {
 
 	// handle CORS using package cors
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:8080"},
+		AllowedOrigins: []string{os.Getenv("APP_URL")},
 		AllowCredentials: true,
 	})
 	handler := c.Handler(server.Router)

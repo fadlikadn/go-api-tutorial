@@ -36,5 +36,5 @@ func Run() {
 
 	//seed.MigrateOnly(server.DB)
 
-	server.Run(":8080")
+	server.Run(os.Getenv("APP_PORT"))
 }
