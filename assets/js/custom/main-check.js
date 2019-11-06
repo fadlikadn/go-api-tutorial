@@ -18,6 +18,13 @@ $(function() {
                         $('#invoiceFoundModal').modal('show');
 
                         $('.item-name').html(data.item_name);
+                        $('.damage-type').html(data.damage_type);
+                        $('.equipment').html(data.equipment);
+                        $('.description').html(data.description);
+                        $('.technician').html(data.technician);
+                        $('.repair-type').html(data.repair_type);
+                        $('.spare-part').html(data.spare_part);
+                        $('.total-price').html(accounting.formatMoney(data.total_price, "Rp ", 0, ".", ","));
                     },
                     error: function(err) {
                         console.log(err);

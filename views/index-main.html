@@ -39,11 +39,39 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    Invoice Ditemukan
+                    <h2>Invoice Ditemukan</h2>
                     <div class="container">
                         <div class="row">
                             <div class="col-3">Nama Barang</div>
                             <div class="col-7"><span class="item-name">Value Nama Barang</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Jenis Kerusakan</div>
+                            <div class="col-7"><span class="damage-type">Value Jenis Kerusakan</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Kelengkapan</div>
+                            <div class="col-7"><span class="equipment">Value Kelengkapan</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Keterangan</div>
+                            <div class="col-7"><span class="description">Value Keterangan</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Teknisi</div>
+                            <div class="col-7"><span class="technician">Value Teknisi</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Jenis Perbaikan</div>
+                            <div class="col-7"><span class="repair-type">Value Jenis Perbaikan</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Spare Part</div>
+                            <div class="col-7"><span class="spare-part">Value Spare Part</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">Total Biaya</div>
+                            <div class="col-7"><span class="total-price">Value Total Biaya</div>
                         </div>
                     </div>
                 </div>
@@ -57,6 +85,8 @@
 <script src="/assets/vendor/jquery/jquery.min.js"></script>
 <script src="/assets/js/pace.js"></script>
 <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/node_modules/moment/moment.js"></script>
+<script src="/node_modules/accounting/accounting.min.js"></script>
 <script src="/assets/js/custom/main-check.js"></script>
 </html>
 {{ end }}

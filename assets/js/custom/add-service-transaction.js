@@ -119,7 +119,7 @@ $(function() {
             $('#preview-service-transaction-technician').html(AddServiceTransactions.serviceTransactionDataObject.technician);
             $('#preview-service-transaction-repair-type').html(AddServiceTransactions.serviceTransactionDataObject.repair_type);
             $('#preview-service-transaction-spare-part').html(AddServiceTransactions.serviceTransactionDataObject.spare_part);
-            $('#preview-service-transaction-price').html(AddServiceTransactions.serviceTransactionDataObject.price);
+            $('#preview-service-transaction-price').html(accounting.formatMoney(AddServiceTransactions.serviceTransactionDataObject.price, "Rp ", 0, '.', ','));
             $('#preview-service-transaction-taken-date').html(AddServiceTransactions.serviceTransactionDataObject.taken_date);
             $('#preview-service-transaction-status').html(AddServiceTransactions.serviceTransactionDataObject.status);
             $('#preview-total-cost').html(accounting.formatMoney(AddServiceTransactions.serviceTransactionDataObject.total_price, "Rp ", 0, '.', ','));
