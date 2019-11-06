@@ -79,7 +79,7 @@ func (server *Server) ActivationPending(w http.ResponseWriter, r *http.Request) 
 }
 
 func (server *Server) LoginWeb(w http.ResponseWriter, r *http.Request) {
-	var filepath = path.Join("views", "login.html")
+	var filepath = path.Join("views", "login-2.html")
 	var tmpl, err = template.ParseFiles(filepath)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

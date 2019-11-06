@@ -40,6 +40,10 @@ var (
 		path.Join("views", "_sidebar.html"),
 		path.Join("views", "_content.html"),
 		path.Join("views", "_footer.html"),
+
+		path.Join("views/template-v2", "_top-navbar-2.html"),
+		path.Join("views/template-v2", "_sidebar-2.html"),
+
 		path.Join("views", "_modals.html"),
 		path.Join("views", "_js.html"),
 	}

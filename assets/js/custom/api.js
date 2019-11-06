@@ -75,6 +75,16 @@ $(function() {
                 success: callback,
             });
         },
+        ServiceTransactionStatusDashboard: function(callback) {
+            let url = base_url + "/api/dashboard/service-transaction";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                contentType: 'application/json',
+                success: callback,
+            });
+        },
         init: function() {
 
         }

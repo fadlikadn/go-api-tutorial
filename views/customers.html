@@ -5,26 +5,20 @@
         {{ template "_header" .title}}
     </head>
     <body>
-    {{ template "_top-navbar" }}
+    {{ template "_top-navbar-2" }}
     <div id="wrapper">
-        {{ template "_sidebar" .sidebar}}
+        {{ template "_sidebar-2" .sidebar}}
 
         <div id="content-wrapper">
             <div class="container-fluid">
-                <!-- Breadcrumbs-->
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/">Dashboard</a>
-                    </li>
-                    <li class="breadcrumb-item active">Customers Management</li>
-                </ol>
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <i class="fas fa-table"></i>
-                        Manage Data Customer
+                <h1 class="h3 mb-2 text-gray-800">Customers Management</h1>
+                <div class="card shadow mb-4">
+                    <div class="card-header py03">
+                        <h6 class="m-10 font-weight-bold text-primary">Manage Data Customer
                         <span class="float-right">
                             <a href="#" data-target="#customerEditModal" data-toggle="modal" class="btn-sm btn-primary" id="btn_add_customer">Add Customer</a>
                         </span>
+                        </h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

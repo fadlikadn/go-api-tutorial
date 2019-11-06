@@ -5,19 +5,13 @@
     {{ template "_header" .title }}
 </head>
 <body>
-    {{ template "_top-navbar" }}
+    {{ template "_top-navbar-2" }}
     <div id="wrapper">
-        {{ template "_sidebar" .sidebar }}
+        {{ template "_sidebar-2" .sidebar}}
 
         <div id="content-wrapper">
             <div class="container-fluid">
-                <!-- Breadcrumbs -->
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/">Dashboard</a>
-                    </li>
-                    <li class="breadcrumb-item active">Add Service Transactions</li>
-                </ol>
+                <h1 class="h3 mb-2 text-gray-800">Add Service Transactions</h1>
 
                 <div id="service-transaction-smartwizard">
                     <ul>

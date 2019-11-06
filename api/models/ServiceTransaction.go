@@ -37,6 +37,12 @@ type ServiceTransaction struct {
 	AdditionalItems	[]AdditionalItem	`gorm:"foreignkey:STId" json:"additional_items"`
 }
 
+type ServiceTransactionStatus struct {
+	New 		int		`json:"new"`
+	InProgress	int		`json:"in_progress"`
+	Completed	int		`json:"completed"`
+}
+
 func (s *ServiceTransaction) BeforeCreate(scope *gorm.Scope) error {
 	id := uuid.NewV4().String()
 	return scope.SetColumn("UUID", id)
@@ -82,6 +88,17 @@ func (s *ServiceTransaction) SaveServiceTransaction(db *gorm.DB) (*ServiceTransa
 		}
 	}
 	return s, nil
+}
+
+func (s *ServiceTransaction) NumberByStatus(db *gorm.DB, status string) (int, error) {
+	var err error
+	var count int
+	err = db.Debug().Model(&ServiceTransaction{}).Where("status = ?", status).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (s *ServiceTransaction) FindAllServiceTransactions(db *gorm.DB) (*[]ServiceTransaction, error) {

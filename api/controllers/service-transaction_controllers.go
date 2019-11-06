@@ -302,6 +302,26 @@ func (server *Server) GetServiceTransactions(w http.ResponseWriter, r *http.Requ
 	responses.JSON(w, http.StatusOK, serviceTransactions)
 }
 
+func (server *Server) GetServicesAmount(w http.ResponseWriter, r *http.Request) {
+	serviceTransaction := models.ServiceTransaction{}
+
+	new, err := serviceTransaction.NumberByStatus(server.DB, "new")
+	inprogress, err := serviceTransaction.NumberByStatus(server.DB, "in-progress")
+	completed, err := serviceTransaction.NumberByStatus(server.DB, "completed")
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	serviceTransactionStatus := models.ServiceTransactionStatus{
+		New:        new,
+		InProgress: inprogress,
+		Completed:  completed,
+	}
+
+	responses.JSON(w, http.StatusOK, serviceTransactionStatus)
+}
+
 func (server *Server) GetServiceTransaction(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	pid, err := strconv.ParseUint(vars["id"], 10, 32)

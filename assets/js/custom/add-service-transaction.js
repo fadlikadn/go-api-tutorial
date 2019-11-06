@@ -93,7 +93,7 @@ $(function() {
                 $previewAdditionalItemList.append($li);
             });
         },
-        _previewServiceTransaction: function() {
+        _previewServiceTrfansaction: function() {
             AddServiceTransactions.serviceTransactionDataObject.service_date = $('#service-transaction-date').val();
             AddServiceTransactions.serviceTransactionDataObject.invoice_no = $('#service-transaction-invoice-no').val();
             AddServiceTransactions.serviceTransactionDataObject.item_name = $('#service-transaction-item-name').val();

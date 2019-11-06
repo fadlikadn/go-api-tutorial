@@ -5,27 +5,21 @@
         {{ template "_header" .title}}
     </head>
     <body>
-    {{ template "_top-navbar" }}
+    {{ template "_top-navbar-2" }}
     <div id="wrapper">
-        {{ template "_sidebar" .sidebar}}
+        {{ template "_sidebar-2" .sidebar}}
 
         <div id="content-wrapper">
             <div class="container-fluid">
-                <!-- Breadcrumbs-->
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="/">Dashboard</a>
-                    </li>
-                    <li class="breadcrumb-item active">Service Transactions Management</li>
-                </ol>
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <i class="fas fa-table"></i>
-                        Manage Data Service Transaction
-                        <span class="float-right">
+                <h1 class="h3 mb-2 text-gray-800">Service Transactions Management</h1>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-10 font-weight-bold text-primary">Manage Data Service Transaction
+                            <span class="float-right">
                             <!--<a href="#" data-target="#serviceTransactionEditModal" data-toggle="modal" class="btn-sm btn-primary" id="btn_add_customer">Add Service Transaction</a>-->
-                            <a href="/add-service-transactions" class="btn-sm btn-primary" id="btn_add_customer">Add Service Transaction New Page</a>
-                        </span>
+                            <a href="/dashboard/add-service-transactions" class="btn-sm btn-primary" id="btn_add_customer">Add Service Transaction New Page</a>
+                        </span></h6>
+
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
