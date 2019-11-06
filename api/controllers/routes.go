@@ -89,3 +89,9 @@ func (s *Server) initializeRoutes() {
 	// Search Invoice
 	s.Router.HandleFunc("/api/search/invoice/{invoiceno}", middlewares.SetMiddlewareJSON(s.SearchInvoice)).Methods("GET")
 }
+
+// TODO Implement Technician Module
+// TODO Implement Reporting Status for each Service Transaction
+// TODO User's Level
+
+// TODO Implement SAAS Starter
