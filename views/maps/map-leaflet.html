@@ -1,0 +1,28 @@
+{{ define "map-leaflet" }}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        {{ template "_header" .title }}
+    </head>
+    <body>
+    {{ template "_top-navbar-2" }}
+    <div id="wrapper">
+        {{ template "_sidebar-2" .sidebar }}
+        <div id="content-wrapper">
+            <div class="container-fluid">
+                <div id="basic-map"></div>
+            </div>
+
+            {{ template "_footer"}}
+        </div>
+    </div>
+
+    {{ template "_js" }}
+    <script>
+        $(function() {
+            LeafletMap.init();
+        });
+    </script>
+    </body>
+    </html>
+{{ end }}

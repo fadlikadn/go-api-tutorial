@@ -6,6 +6,7 @@
     "bootstrap-validator": "^0.11.9",
     "jquery": "^3.4.1",
     "jquery-price-format": "https://github.com/flaviosilveira/Jquery-Price-Format.git",
+    "leaflet": "^1.6.0",
     "libphonenumber-js": "^1.7.26",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",

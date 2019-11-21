@@ -66,6 +66,16 @@
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 
+        <div class="sidebar-heading">
+            Maps
+        </div>
+        <li class="nav-item {{ if eq . "map-basic"}} active {{ end }}">
+            <a class="nav-link" href="/dashboard/map-basic">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Map Basic</span>
+            </a>
+        </li>
+
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>

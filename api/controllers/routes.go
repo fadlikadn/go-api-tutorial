@@ -27,6 +27,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/dashboard/customers", middlewares.SetMiddlewareAuthenticationSession(s.ManageCustomerWeb)).Methods("GET")
 	s.Router.HandleFunc("/dashboard/service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.ManageServiceTransactionWeb)).Methods("GET")
 	s.Router.HandleFunc("/dashboard/add-service-transactions", middlewares.SetMiddlewareAuthenticationSession(s.AddServiceTransactionWeb)).Methods("GET")
+	s.Router.HandleFunc("/dashboard/map-basic", middlewares.SetMiddlewareAuthenticationSession(s.LeafletBasicMap)).Methods("GET")
 
 	/**
 	Static Files such as JS, CSS, others
