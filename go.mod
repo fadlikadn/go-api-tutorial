@@ -24,4 +24,5 @@ require (
 	golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )

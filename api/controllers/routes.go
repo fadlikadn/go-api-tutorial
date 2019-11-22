@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"github.com/fadlikadn/go-api-tutorial/api/middlewares"
+	"github.com/fadlikadn/go-api-tutorial/persistence"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -96,3 +98,19 @@ func (s *Server) initializeRoutes() {
 // TODO User's Level
 
 // TODO Implement SAAS Starter
+
+//
+/**
+	Microservice Event API
+	Using interface and abstraction
+ */
+func ServeAPI(endpoint string, databasehandler persistence.DatabaseHandler) error {
+	handler := NewEventHandler(databasehandler)
+	r := mux.NewRouter()
+	eventsRouter := r.PathPrefix("/events").Subrouter()
+	eventsRouter.Methods("GET").Path("/{SearchCriteria}/{search}").HandlerFunc(handler.FindEventHandler)
+	eventsRouter.Methods("GET").Path("").HandlerFunc(handler.AllEventHandler)
+	eventsRouter.Methods("POST").Path("").HandlerFunc(handler.NewEventHandler)
+
+	return http.ListenAndServe(endpoint, r)
+}
