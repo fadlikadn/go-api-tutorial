@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package proto;
+
+enum MemberGender {
+    UNDEGINED = 0;
+    MALE = 1;
+    FEMALE = 2;
+}
+
+message Member {
+    string id = 1;
+    string name = 2;
+    string password = 3;
+    MemberGender gender = 4;
+}
+
+message MemberList {
+    repeated Member list = 1;
+}

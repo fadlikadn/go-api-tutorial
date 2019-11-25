@@ -20,7 +20,10 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/login", middlewares.SetMiddlewareAuthenticationSessionOut(s.LoginWeb)).Methods("GET")
 	s.Router.HandleFunc("/register", middlewares.SetMiddlewareAuthenticationSessionOut(s.RegisterWeb)).Methods("GET")
 	s.Router.HandleFunc("/forgotpassword", middlewares.SetMiddlewareAuthenticationSessionOut(s.ForgotPasswordWeb)).Methods("GET")
-	s.Router.HandleFunc("/activation-pending", middlewares.SetMiddlewareAuthenticationSessionOut(s.ActivationPending)).Methods("GET")
+	s.Router.HandleFunc("/activation-pending", s.ActivationPending).Methods("GET")
+
+	// Protobuf + GRPC
+	s.Router.HandleFunc("/grpc/test-protobuf", middlewares.SetMiddlewareAuthenticationSessionOut(s.TestProtobuf)).Methods("GET")
 
 	// Features
 	s.Router.HandleFunc("/", s.IndexMain).Methods("GET")
