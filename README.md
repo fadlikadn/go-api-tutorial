@@ -5,3 +5,7 @@
 * Upgrade Protoc in Windows using Choco : run `choco upgrade protoc --pre `
 * Uninstall Protoc in Windows using Choco : run `choco uninstall protoc --pre `
 * Convert `.proto` to `.go` : run `protoc --go_out=. *.proto`
+
+## Reference
+* https://chocolatey.org/packages/protoc
+* https://dasarpemrogramangolang.novalagung.com/C-29-golang-protobuf-implementation.html
