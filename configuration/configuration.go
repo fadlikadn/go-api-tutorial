@@ -35,3 +35,8 @@ func ExtractConfiguration(filename string) (ServiceConfig, error) {
 	err = json.NewDecoder(file).Decode(&conf)
 	return conf, err
 }
+
+const (
+	SERVICE_GARAGE_PORT = ":7000"
+	SERVICE_MEMBER_PORT = ":9000"
+)

@@ -96,3 +96,7 @@ func (server *Server) TestProtobuf(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("# ==== As String\n %v \n", protoObject.String())
 }
+
+func (server *Server) TestProtobufGRPC(w http.ResponseWriter, r *http.Request) {
+
+}

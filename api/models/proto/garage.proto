@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package proto;
 
 message GarageCoordinate {
@@ -19,4 +21,18 @@ message GarageList {
 
 message GarageListByMember {
     map<string, GarageList> list = 1;
+}
+
+message GarageMemberId {
+    string member_id = 1;
+}
+
+message GarageAndMemberId {
+    string member_id = 1;
+    Garage garage = 2;
+}
+
+service Garages {
+    rpc List(GarageMemberId) returns (GarageList) {}
+    rpc Add(GarageAndMemberId) returns (google.protobuf.Empty) {}
 }
