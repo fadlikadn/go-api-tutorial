@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/mailgun/mailgun-go/v3"
+	"gopkg.in/gomail.v2"
+	"log"
 	"net/smtp"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -37,6 +40,34 @@ func SendActivationEmail(receiver string) (string, error) {
 	_, id, err := mg.Send(ctx, message)
 
 	return id, err
+}
+
+func SendTestEmail(receiver string) {
+	CONFIG_SMTP_HOST := os.Getenv("CONFIG_SMTP_HOST")
+	CONFIG_SMTP_PORT, _ := strconv.Atoi(os.Getenv("CONFIG_SMTP_PORT"))
+	CONFIG_EMAIL := os.Getenv("CONFIG_EMAIL")
+	CONFIG_EMAIL_PASSWORD := os.Getenv("CONFIG_EMAIL_PASSWORD")
+
+	mailer := gomail.NewMessage()
+	mailer.SetHeader("From", CONFIG_EMAIL)
+	mailer.SetHeader("To", receiver)
+	mailer.SetHeader("Subject", "Test Mail")
+	mailer.SetBody("text/html", "Hello, <b>have a nice day</b>")
+
+	dialer := gomail.NewDialer(
+		CONFIG_SMTP_HOST,
+		CONFIG_SMTP_PORT,
+		CONFIG_EMAIL,
+		CONFIG_EMAIL_PASSWORD,
+	)
+
+	err := dialer.DialAndSend(mailer)
+	if err != nil {
+		fmt.Println("error here")
+		log.Fatal(err.Error())
+	}
+
+	log.Println("Mail sent!")
 }
 
 func SendStatusEmail(receiver string) (int, error) {
