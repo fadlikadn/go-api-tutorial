@@ -15,7 +15,11 @@
 ## REST API
 * In root directory, run `go run main.go`
 
+## Websocket - Chatting
+* Run chatting app with `cd websocket/`, then run `go run main.go`, the app using port `:8050`. Access `localhost:8050` to open the app. 
+
 ## Reference
 * https://chocolatey.org/packages/protoc
 * https://dasarpemrogramangolang.novalagung.com/C-29-golang-protobuf-implementation.html
 * https://dasarpemrogramangolang.novalagung.com/C-30-golang-grpc-protobuf.html
+* https://dasarpemrogramangolang.novalagung.com/C-28-golang-web-socket.html

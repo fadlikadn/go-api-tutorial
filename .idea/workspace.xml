@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fee2a1d6-7625-42ff-864c-4d4d893ad18e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/email/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/websocket/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/utils/email/email.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/utils/email/email.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
@@ -32,9 +33,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="HTML File" />
         <option value="JavaScript File" />
         <option value="Go File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -61,15 +62,15 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\persistence" />
+      <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\assets\js\demo" />
       <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\assets\js" />
       <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\assets\css" />
       <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\assets\image" />
-      <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack\persistence" />
       <recent name="D:\sourcecode\Mitrais\CDC\Go\fullstack" />
     </key>
   </component>

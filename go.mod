@@ -22,6 +22,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
+	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/joho/godotenv v1.3.0
@@ -31,6 +32,7 @@ require (
 	github.com/mailgun/mailgun-go/v3 v3.6.0
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/metakeule/fmtdate v1.1.2
+	github.com/novalagung/gubrak v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/satori/go.uuid v1.2.0
