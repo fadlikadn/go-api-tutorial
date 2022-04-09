@@ -8,7 +8,7 @@
     "jquery-price-format": "https://github.com/flaviosilveira/Jquery-Price-Format.git",
     "leaflet": "^1.6.0",
     "libphonenumber-js": "^1.7.26",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "numeral": "^2.0.6",
     "requirejs": "^2.3.6",
     "select2": "^4.0.11",
